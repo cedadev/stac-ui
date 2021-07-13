@@ -1,6 +1,5 @@
 import {
     setItemListType,
-    setFilteredItemListType,
     selectItemType,
     deselectItemType,
     setLoadingType,
