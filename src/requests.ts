@@ -14,21 +14,22 @@ import {items_data, collection_data} from './data.js';
 //   return result;
 // }
 
-// async function requestGET(requestBody: any): Promise<any> {
-//     const response = await fetch(stacAPI, {
-//       method: 'GET',
-//       headers: {
-//         'Content-Type': 'application/json;charset=UTF-8',
-//       },
-//       parameters: JSON.stringify(requestBody),
-//     });
-//     const result = await response.json();
-//     return result;
-//   }
+async function requestGET(requestURL: any): Promise<any> {
+    const response = await fetch(requestURL, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+      }
+    });
+    console.log(response)
+    const result = await response.json();
+    return result;
+  }
 
 export async function requestSearchItems(query: string, facets: Facet[]): Promise<{success: boolean, itemList: Item[]}> {
-  
-  // const result = await requestPOST(requestBody);
+
+  const requestURL = `${process.env.REACT_APP_API_URL}search?query=${query}`;
+  // const response = await requestGET(requestURL);
   const result = {
     success: true,
     itemList: items_data
@@ -77,6 +78,16 @@ export async function requestFacets(): Promise<{success: boolean, availableFacet
   const result = {
     success: true,
     availableFacets: []
+  };
+  return result;
+}
+
+export async function requestCollectionList(): Promise<{success: boolean, collectionList: Collection[]}> {
+  
+  // const result = await requestPOST(requestBody);
+  const result = {
+    success: true,
+    collectionList: []
   };
   return result;
 }

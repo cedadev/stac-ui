@@ -3,7 +3,7 @@ import { Item } from '../types'
 import ListGroup from 'react-bootstrap/ListGroup';
 
 interface Props {
-    items: Item[];
+  items: Item[];
   onClick: (item: Item) => void;
 }
 
@@ -16,8 +16,10 @@ class ItemList extends React.Component<Props, {}> {
           action
           id="item-list-item"
           key={item.id.toString()}
-          onClick={() => {this.props.onClick(item);}}        
+          onClick={() => {this.props.onClick(item);}}
+          style={{textAlign: 'left'}}   
         >
+          <p>Collection: <a href={`/collections/${item.collection_id}`}>{item.collection_id}</a></p>
           {JSON.stringify(item.properties)}
         </ListGroup.Item>
       );

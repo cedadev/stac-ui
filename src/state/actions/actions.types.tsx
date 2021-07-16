@@ -1,6 +1,7 @@
 import { Facet, Item, Collection } from "../../types";
 
-export const setItemListType = 'set_search_list';
+export const setItemListType = 'set_item_list';
+export const setCollectionListType = 'set_collection_list';
 export const selectItemType = 'select_item';
 export const deselectItemType = 'deselect_item';
 export const selectCollectionType = 'select_collection';
@@ -13,6 +14,10 @@ export const setQueryType = 'set_query';
 
 export interface setItemListPayload {
   itemList: Item[];
+}
+
+export interface setCollectionListPayload {
+  collectionList: Collection[];
 }
 
 export interface selectItemPayload {

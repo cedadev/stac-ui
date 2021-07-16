@@ -4,70 +4,50 @@ import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { push } from 'connected-react-router';
-import { setItemList, setQuery, setSelectedFacets, setAvailableFacets } from '../state/actions/actions';
-import ItemList from '../Components/ItemList';
-import { requestSearchItems, requestFacets } from '../requests';
-import queryString from 'query-string';
+import { push, replace } from 'connected-react-router';
+import { setQuery, setAvailableFacets, setSelectedFacets } from '../state/actions/actions';
+import { requestFacets } from '../requests';
 import FacetsBar from "../Components/FacetsBar";
 import SearchBar from "../Components/SearchBar";
+import NavBar from "../Components/NavBar";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-
-interface SearchProps {
-  url_query: string;
-}
-
-interface SearchStoreProps {
+interface HomeStoreProps {
   query: string;
-  itemList: Item[];
   availableFacets: Facet[];
   selectedFacets: Facet[];
 }
 
-interface SearchDispatchProps {
+interface HomeDispatchProps {
   setQuery: (query: string) => Action;
-  setItemList: (itemList: Item[]) => Action;
-  setAvailableFacets: (availableFacets: Facet[]) => Action;
-  setSelectedFacets: (setSelectedFacets: Facet[]) => Action;
+  setAvailableFacets: (availableFacet: Facet[]) => Action;
+  setSelectedFacets: (selectedFacet: Facet[]) => Action;
   push: (path: string) => Action;
+  replace: (path: string) => Action;
 }
 
-type SearchCombinedProps = SearchProps & SearchStoreProps & SearchDispatchProps;
 
-class SearchPage extends Component< (SearchCombinedProps), {}>  {
+class HomePage extends Component<(HomeStoreProps & HomeDispatchProps), {history: any}>  {
 
   public async componentDidMount(): Promise<void> {
-    let params = queryString.parse(this.props.url_query)
-    // set query and facets from params
-    console.log("query params: ", this)
-    await this.setFacets();
-    await this.search();
-    }
+    await this.getFacets();
+    console.log("query params: ", this.props);
+    // if (this.props.history.action === 'POP') {
+    //   // this.props.push('/');
+    // }
+  }
 
-  public setFacets = async (): Promise<void> => {
-    
+  public getFacets = async (): Promise<void> => {
     const result = await requestFacets();
     if (result.success) {
-    //   await this.props.setAvailableFacets(result.Facets);
+    //   this.props.setAvailableFacets(result.Facets);
     }
-  };
-  
-  public search = async (): Promise<void> => {
-    const result = await requestSearchItems(this.props.query, this.props.selectedFacets);
-    if (result.success) {
-      this.props.setItemList(result.itemList);
-    }
-  };
-
-  public handleItemClick = async (item: Item): Promise<void> => {
-    this.props.push(`/collections/${item.collection_id}/items/${item.id}`);
   };
 
   public handleSearch = async (e: any): Promise<void> => {
-    this.props.push(`/search/q=${this.props.query}`);
+    this.props.push('/search/q=' + this.props.query);
   };
 
   private handleQueryChange = async (e: any): Promise<void> => {
@@ -86,7 +66,8 @@ class SearchPage extends Component< (SearchCombinedProps), {}>  {
   public render(): React.ReactElement {
     return (
       <>
-        <h2>Search</h2>
+        <NavBar/>
+        <h2>CEDA Search</h2>
         <Container>
           <Row>
             <Col xs={12} sm={2}>
@@ -94,47 +75,36 @@ class SearchPage extends Component< (SearchCombinedProps), {}>  {
             </Col>
             <Col>
               <SearchBar handleSearch={this.handleSearch} handleQueryChange={this.handleQueryChange}/>
-              <>
-                {this.props.itemList !== [] ? (
-                  <ItemList 
-                    items={this.props.itemList}
-                    onClick={this.handleItemClick}
-                  />
-                ) : (
-                  <p>No items for this search</p>
-                )}
-              </>
             </Col>
           </Row>
         </Container>
       </>
+      
     );
   }
 }
 
-const mapStateToProps = (state: StateType): SearchStoreProps => {
-    
+const mapStateToProps = (state: StateType): HomeStoreProps => {
   return {
-    itemList: state.main.itemList,
+    query: state.main.query,
     availableFacets: state.main.availableFacets,
     selectedFacets: state.main.selectedFacets,
-    query: state.main.query,
   }
 }
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
-): SearchDispatchProps => ({
+): HomeDispatchProps => ({
   setQuery: (query: string) =>
     dispatch(setQuery(query)),
-  setItemList: (itemList: Item[]) =>
-    dispatch(setItemList(itemList)),
   setAvailableFacets: (availableFacets: Facet[]) =>
     dispatch(setAvailableFacets(availableFacets)),
   setSelectedFacets: (selectedFacets: Facet[]) =>
     dispatch(setSelectedFacets(selectedFacets)),
   push: (path: string) =>
     dispatch(push(path)),
+  replace: (path: string) =>
+    dispatch(replace(path)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchPage);
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

@@ -3,6 +3,7 @@ import createReducer from './createReducer';
 import {
   setLoadingType,
   setItemListType,
+  setCollectionListType,
   selectItemType,
   deselectItemType,
   selectCollectionType,
@@ -14,6 +15,7 @@ import {
   setAvailableFacetsPayload,
   setSelectedFacetsPayload,
   setItemListPayload,
+  setCollectionListPayload,
   selectItemPayload,
   selectCollectionPayload,
   setQueryPayload,
@@ -21,6 +23,7 @@ import {
 
 export const initialState: MainState = {
   itemList: [],
+  collectionList: [],
   availableFacets: [],
   selectedFacets: [],
   query: '',
@@ -35,6 +38,16 @@ export function setItemList(
   return {
     ...state,
     itemList: payload.itemList,
+  };
+}
+
+export function setCollectionList(
+  state: MainState,
+  payload: setCollectionListPayload
+): MainState {
+  return {
+    ...state,
+    collectionList: payload.collectionList,
   };
 }
 
@@ -118,6 +131,7 @@ export function setQuery(
 
 const MainReducer = createReducer(initialState, {
   [setItemListType]: setItemList,
+  [setCollectionListType]: setCollectionList,
   [selectItemType]: selectItem,
   [deselectItemType]: deselectItem,
   [selectCollectionType]: selectCollection,

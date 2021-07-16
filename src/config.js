@@ -2,4 +2,4 @@
 //to take effect
 
 //Address of stac API enpoint
-export const stacAPI = 'https://stac-elasticsearch-master.130.246.131.9.nip.io/';
+export const stacAPI = 'https://crossorigin.me/https://stac-elasticsearch-master.130.246.131.9.nip.io/';

@@ -1,19 +1,21 @@
 import {
     setItemListType,
+    setCollectionListType,
     selectItemType,
     deselectItemType,
     setLoadingType,
     setAvailableFacetsType,
     setSelectedFacetsType,
     setQueryType,
+    deselectCollectionType,
+    selectCollectionType,
     setItemListPayload,
+    setCollectionListPayload,
     selectItemPayload,
     setLoadingPayload,
     setAvailableFacetsPayload,
     setSelectedFacetsPayload,
     setQueryPayload,
-    deselectCollectionType,
-    selectCollectionType,
     selectCollectionPayload,
   } from './actions.types';
   import { ActionType } from '../app.types';
@@ -26,6 +28,15 @@ import {
     type: setItemListType,
     payload: {
       itemList,
+    },
+  });
+  
+  export const setCollectionList = (
+    collectionList: Collection[]
+  ): ActionType<setCollectionListPayload> => ({
+    type: setCollectionListType,
+    payload: {
+      collectionList,
     },
   });
   
