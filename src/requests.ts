@@ -15,21 +15,21 @@ import { Item, Facet, Collection } from './types';
 // }
 
 async function requestGET(requestURL: any): Promise<any> {
-    const response = await fetch(requestURL, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-      }
-    });
-    const result = await response.json();
-    console.log(result)
-    return result;
-  }
+  console.log(requestURL)
+  const response = await fetch(requestURL, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    }
+  });
+  const result = await response.json();
+  console.log(result)
+  return result;
+}
 
 export async function requestSearchItems(query: string, facets: Facet[]): Promise<{success: boolean, itemList: Item[]}> {
 
   const requestURL = `${stacAPI}search?query=${query}`;
-  console.log(requestURL)
   const response = await requestGET(requestURL);
   var itemList = response['features'].map( function(i: any) {
     return {
@@ -152,7 +152,7 @@ export async function requestFacets(): Promise<{success: boolean, availableFacet
 
 export async function requestCollectionList(): Promise<{success: boolean, collectionList: Collection[]}> {
   
-  const requestURL = `${stacAPI}collections/`;
+  const requestURL = `${stacAPI}collections`;
   const response = await requestGET(requestURL);
   var collectionList: Collection[] = await Promise.all(response.map( async function(c: any): Promise<Collection> {
     const items = (await requestCollectionItems(c.id)).items;
