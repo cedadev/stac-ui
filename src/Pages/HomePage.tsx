@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Item, Facet } from '../types';
+import { Facet } from '../types';
 import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
@@ -34,9 +34,6 @@ class HomePage extends Component<(HomeStoreProps & HomeDispatchProps), {history:
   public async componentDidMount(): Promise<void> {
     await this.getFacets();
     console.log("query params: ", this.props);
-    // if (this.props.history.action === 'POP') {
-    //   // this.props.push('/');
-    // }
   }
 
   public getFacets = async (): Promise<void> => {
@@ -56,7 +53,7 @@ class HomePage extends Component<(HomeStoreProps & HomeDispatchProps), {history:
 
   private handleDateChange = async (e: any): Promise<void> => {
     console.log(e)
-    if (e.target.id == 'startDate') {
+    if (e.target.id === 'startDate') {
       // this.props.setStartDate(event.target.value);
     } else {
       // this.props.setEndDate(event.target.value);
@@ -67,10 +64,10 @@ class HomePage extends Component<(HomeStoreProps & HomeDispatchProps), {history:
     return (
       <>
         <NavBar/>
-        <h2>CEDA Search</h2>
         <Container>
           <Row>
-            <Col xs={12} sm={2}>
+            <Col xs={12} sm={4}>
+              <br/>
               <FacetsBar facets={this.props.availableFacets} handleChange={this.handleDateChange}/>
             </Col>
             <Col>
@@ -79,7 +76,6 @@ class HomePage extends Component<(HomeStoreProps & HomeDispatchProps), {history:
           </Row>
         </Container>
       </>
-      
     );
   }
 }

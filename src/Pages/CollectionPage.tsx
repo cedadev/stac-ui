@@ -8,10 +8,11 @@ import { push } from 'connected-react-router';
 import { selectCollection } from '../state/actions/actions';
 import { requestCollection } from '../requests';
 import NavBar from "../Components/NavBar";
-import MapExtent from "../Components/MapExtent";
 import BreadCrumb from "../Components/BreadCrumb";
 import ItemList from "../Components/ItemList";
 import MetaDataList from "../Components/MetaDataList";
+import Temporal from "../Components/Temporal";
+import Spacial from "../Components/Spacial";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -51,10 +52,11 @@ class CollectionPage extends Component<(CollectionProps & CollectionStoreProps &
 
   public render(): React.ReactElement {
     if (this.props.selectedCollection) {
+      console.log(this.props.selectedCollection.spatial.bbox)
       return (
         <>
           <NavBar/>
-          <Container>
+          <Container style={{marginBottom:'2em'}}>
             <BreadCrumb collection_id={this.props.selectedCollection.id}/>
             <Row>
               <Col xs={12} sm={8} style={{textAlign: 'left'}}>
@@ -64,11 +66,13 @@ class CollectionPage extends Component<(CollectionProps & CollectionStoreProps &
                 <ItemList items={this.props.selectedCollection.items} onClick={this.handleItemClick} />
               </Col>
               <Col>
-                <MapExtent bbox={this.props.selectedCollection.properties.bbox}/>
+                <Temporal interval={this.props.selectedCollection.temporal.interval}/><br/>
+                <Spacial bbox={this.props.selectedCollection.spatial.bbox}/><br/>
                 <MetaDataList metaData={this.props.selectedCollection.properties} />
               </Col>
             </Row>
           </Container>
+          <footer></footer>
         </>
       );
     } else {

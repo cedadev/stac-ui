@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Item, Collection } from '../types';
+import { Collection } from '../types';
 import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
@@ -8,7 +8,6 @@ import { push } from 'connected-react-router';
 import { setCollectionList } from '../state/actions/actions';
 import { requestCollectionList } from '../requests';
 import NavBar from "../Components/NavBar";
-import Map from "../Components/MapExtent";
 import BreadCrumb from "../Components/BreadCrumb";
 import CollectionList from "../Components/CollectionList";
 import Container from 'react-bootstrap/Container';
@@ -51,12 +50,14 @@ class CollectionPage extends Component<(CollectionsStoreProps & CollectionsDispa
           <Container>
             <BreadCrumb/>
             <Row>
-              <div style={{borderBottom: '1px solid grey', textAlign: 'right'}}>{this.props.collectionList.length} Results</div>
-              {this.props.collectionList !== [] ? (
-                  <CollectionList collections={this.props.collectionList} onClick={this.handleItemClick}/>
-                ) : (
-                  <p>No match found</p>
-                )}
+              <Col>
+                <div style={{borderBottom: '1px solid grey', textAlign: 'right'}}>{this.props.collectionList.length} Results</div>
+                {this.props.collectionList !== [] ? (
+                    <CollectionList collections={this.props.collectionList} onClick={this.handleItemClick}/>
+                  ) : (
+                    <p>No match found</p>
+                  )}
+              </Col>
             </Row>
           </Container>
         </>

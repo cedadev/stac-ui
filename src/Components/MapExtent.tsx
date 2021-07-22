@@ -1,4 +1,5 @@
 import React, { Component} from 'react';
+import map from '../staticmap.png';
 
 interface Props {
   bbox: number[];
@@ -14,12 +15,12 @@ class MapExtent extends Component <Props, {url:string}> {
   
       let east:number, west:number, north:number, south:number;
       east = west = north = south = 0;
-      if (bbox.length == 4) {
+      if (bbox.length === 4) {
         east = bbox[0];
         west = bbox[2];
         north = bbox[1];
         south = bbox[3];
-      } else if (bbox.length == 6) {
+      } else if (bbox.length === 6) {
         east = bbox[0];
         west = bbox[3];
         north = bbox[1];
@@ -51,7 +52,7 @@ class MapExtent extends Component <Props, {url:string}> {
     }
 
   public render(): React.ReactElement {
-    return (<img src={this.state.url}/>);
+    return (<img src={ map } alt='Map extent'/>);
   }
 }
 

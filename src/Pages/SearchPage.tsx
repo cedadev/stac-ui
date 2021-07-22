@@ -43,9 +43,8 @@ class SearchPage extends Component< (SearchCombinedProps), {}>  {
   public async componentDidMount(): Promise<void> {
     let params = queryString.parse(this.props.url_query)
     // set query and facets from params
-    console.log("query params: ", this)
     await this.setFacets();
-    await this.search();
+    await this.search(params.q, params.facets);
     }
 
   public setFacets = async (): Promise<void> => {
@@ -56,7 +55,7 @@ class SearchPage extends Component< (SearchCombinedProps), {}>  {
     }
   };
   
-  public search = async (): Promise<void> => {
+  public search = async (query:any, facets:any): Promise<void> => {
     const result = await requestSearchItems(this.props.query, this.props.selectedFacets);
     if (result.success) {
       this.props.setItemList(result.itemList);
@@ -77,7 +76,7 @@ class SearchPage extends Component< (SearchCombinedProps), {}>  {
 
   private handleDateChange = async (e: any): Promise<void> => {
     console.log(e)
-    if (e.target.id == 'startDate') {
+    if (e.target.id === 'startDate') {
       // this.props.setStartDate(event.target.value);
     } else {
       // this.props.setEndDate(event.target.value);
@@ -88,10 +87,10 @@ class SearchPage extends Component< (SearchCombinedProps), {}>  {
     return (
       <>
         <NavBar/>
-        <h2>CEDA Search</h2>
         <Container>
           <Row>
-            <Col xs={12} sm={2}>
+            <Col xs={12} sm={4}>
+              <br/>
               <FacetsBar facets={this.props.availableFacets} handleChange={this.handleDateChange}/>
             </Col>
             <Col>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Asset } from '../types'
-import ListGroup from 'react-bootstrap/ListGroup';
 
 interface Props {
     assets: Asset[];
@@ -8,24 +7,25 @@ interface Props {
 
 class AssetList extends React.Component<Props, {}> {
 
-  private buildAssetList(): React.ReactElement[] {
-    const assetList = this.props.assets.map(asset => {
-      let listItem = (
-        <ListGroup.Item
-          id="asset-list-item"
-          key={asset.id.toString()}
-        >
-          {asset.id.toString()}
-        </ListGroup.Item>
+  private buildAssetTable(): React.ReactElement[] {
+    const assetTable = this.props.assets.map(asset => {
+      let tableRow = (
+
+        <tr>
+          <td>
+          <p style={{fontSize:'14px', marginBottom:'0'}}>{asset.id.toString()}</p>
+              <p style={{color: 'grey', fontSize:'12px', marginBottom:'0'}}>&nbsp;&nbsp;&nbsp;&nbsp;{asset.type}</p>
+          </td>
+        </tr>
       );
-      return listItem;
+      return tableRow;
     });
 
-    return assetList;
+    return assetTable;
   }
 
   public render(): React.ReactElement {
-    return <ListGroup>{this.buildAssetList()}</ListGroup>;
+    return <table className='table table-striped'><tbody>{this.buildAssetTable()}</tbody></table>
   }
 }
 

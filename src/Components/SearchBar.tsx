@@ -1,13 +1,6 @@
 import React from 'react';
-import { Facet } from '../types';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
-
-import Grid from '@material-ui/core/Grid';
 import FormControl from 'react-bootstrap/FormControl';
 
 
@@ -21,6 +14,7 @@ class SearchBar extends React.Component<Props, {}> {
   private buildSearchBar(): React.ReactElement {
     const SearchBar = (
       <>
+        <h2>CEDA Search</h2>
         <InputGroup className="mb-3">
           <FormControl
             placeholder="Search"

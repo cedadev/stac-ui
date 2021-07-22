@@ -14,7 +14,7 @@ class NavBar extends React.Component {
           <Navbar.Brand href="/">CEDA</Navbar.Brand>
             <Nav >
               <Nav.Link href="/">Search</Nav.Link>
-              <Nav.Link href="collections">Collections</Nav.Link>
+              <Nav.Link href="/collections">Collections</Nav.Link>
             </Nav>
         </Container>
       </Navbar>

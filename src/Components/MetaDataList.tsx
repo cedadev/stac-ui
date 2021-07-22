@@ -11,7 +11,8 @@ class MetaDataList extends React.Component<Props, {}> {
     const metaDataList = Object.entries(this.props.metaData).map(metaData => {
       let listItem = (
         <ListGroup.Item
-          id="asset-list-item"
+          id='metadata-list-item'
+          key={metaData[0]}
         >
           {`${metaData[0]}: ${metaData[1]}`} 
         </ListGroup.Item>
@@ -23,7 +24,7 @@ class MetaDataList extends React.Component<Props, {}> {
   }
 
   public render(): React.ReactElement {
-    return <ListGroup>{this.buildMetaDataList()}</ListGroup>;
+    return <ListGroup><h5>Meta Data</h5>{this.buildMetaDataList()}</ListGroup>;
   }
 }
 

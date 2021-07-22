@@ -2,10 +2,14 @@ export type Collection = {
   id: string;
   title: string;
   description: string;
-  properties:{
-    license: string;
+  spatial: {
     bbox: number[];
-    temporal: string[];
+  },
+  temporal: {
+    interval: string[];
+  },
+  properties: {
+    license: string;
     keywords: string[];
     platform: string[];
     flight_number: string[];
@@ -16,7 +20,7 @@ export type Collection = {
 export type Item = {
   id: string;
   bbox: number[];
-  properties:{};
+  properties: any;
   assets: Asset[];
   collection_id: string;
 };
