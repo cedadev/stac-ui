@@ -5,7 +5,7 @@ import {
     deselectItemType,
     setLoadingType,
     setAvailableFacetsType,
-    setSelectedFacetsType,
+    setSelectedFacetType,
     setQueryType,
     deselectCollectionType,
     selectCollectionType,
@@ -14,7 +14,7 @@ import {
     selectItemPayload,
     setLoadingPayload,
     setAvailableFacetsPayload,
-    setSelectedFacetsPayload,
+    setSelectedFacetPayload,
     setQueryPayload,
     selectCollectionPayload,
   } from './actions.types';
@@ -75,12 +75,14 @@ import {
     },
   });
 
-  export const setSelectedFacets = (
-    selectedFacets: Facet[]
-  ): ActionType<setSelectedFacetsPayload> => ({
-    type: setSelectedFacetsType,
+  export const setSelectedFacet = (
+    selectedFacet: string,
+    facetValue: any,
+  ): ActionType<setSelectedFacetPayload> => ({
+    type: setSelectedFacetType,
     payload: {
-      selectedFacets,
+      selectedFacet,
+      facetValue
     },
   });
 

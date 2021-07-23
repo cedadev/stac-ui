@@ -5,7 +5,7 @@ import { AnyAction } from 'redux';
 export interface MainState {
   itemList: Item[];
   collectionList: Collection[];
-  selectedFacets: Facet[];
+  selectedFacets: object;
   availableFacets: Facet[];
   selectedItem?: Item;
   selectedCollection?: Collection;

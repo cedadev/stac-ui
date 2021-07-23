@@ -5,7 +5,7 @@ import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { push, replace } from 'connected-react-router';
-import { setQuery, setAvailableFacets, setSelectedFacets } from '../state/actions/actions';
+import { setQuery, setAvailableFacets, setSelectedFacet } from '../state/actions/actions';
 import { requestFacets } from '../requests';
 import FacetsBar from "../Components/FacetsBar";
 import SearchBar from "../Components/SearchBar";
@@ -17,13 +17,11 @@ import Col from 'react-bootstrap/Col';
 interface HomeStoreProps {
   query: string;
   availableFacets: Facet[];
-  selectedFacets: Facet[];
+  selectedFacets: {};
 }
 
 interface HomeDispatchProps {
   setQuery: (query: string) => Action;
-  setAvailableFacets: (availableFacet: Facet[]) => Action;
-  setSelectedFacets: (selectedFacet: Facet[]) => Action;
   push: (path: string) => Action;
   replace: (path: string) => Action;
 }
@@ -44,7 +42,7 @@ class HomePage extends Component<(HomeStoreProps & HomeDispatchProps), {history:
   };
 
   public handleSearch = async (e: any): Promise<void> => {
-    this.props.push('/search/q=' + this.props.query);
+    this.props.push(`/search/q=${this.props.query}&facets=${JSON.stringify(this.props.selectedFacets)}`);
   };
 
   private handleQueryChange = async (e: any): Promise<void> => {
@@ -68,7 +66,7 @@ class HomePage extends Component<(HomeStoreProps & HomeDispatchProps), {history:
           <Row>
             <Col xs={12} sm={4}>
               <br/>
-              <FacetsBar facets={this.props.availableFacets} handleChange={this.handleDateChange}/>
+              <FacetsBar url_query=''/>
             </Col>
             <Col>
               <SearchBar handleSearch={this.handleSearch} handleQueryChange={this.handleQueryChange}/>
@@ -93,10 +91,6 @@ const mapDispatchToProps = (
 ): HomeDispatchProps => ({
   setQuery: (query: string) =>
     dispatch(setQuery(query)),
-  setAvailableFacets: (availableFacets: Facet[]) =>
-    dispatch(setAvailableFacets(availableFacets)),
-  setSelectedFacets: (selectedFacets: Facet[]) =>
-    dispatch(setSelectedFacets(selectedFacets)),
   push: (path: string) =>
     dispatch(push(path)),
   replace: (path: string) =>

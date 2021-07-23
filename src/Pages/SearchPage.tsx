@@ -5,7 +5,7 @@ import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { push } from 'connected-react-router';
-import { setItemList, setQuery, setSelectedFacets, setAvailableFacets } from '../state/actions/actions';
+import { setItemList, setQuery, setAvailableFacets } from '../state/actions/actions';
 import ItemList from '../Components/ItemList';
 import { requestSearchItems, requestFacets } from '../requests';
 import queryString from 'query-string';
@@ -23,16 +23,13 @@ interface SearchProps {
 
 interface SearchStoreProps {
   query: string;
+  selectedFacets: object;
   itemList: Item[];
-  availableFacets: Facet[];
-  selectedFacets: Facet[];
 }
 
 interface SearchDispatchProps {
   setQuery: (query: string) => Action;
   setItemList: (itemList: Item[]) => Action;
-  setAvailableFacets: (availableFacets: Facet[]) => Action;
-  setSelectedFacets: (setSelectedFacets: Facet[]) => Action;
   push: (path: string) => Action;
 }
 
@@ -67,20 +64,11 @@ class SearchPage extends Component< (SearchCombinedProps), {}>  {
   };
 
   public handleSearch = async (e: any): Promise<void> => {
-    this.props.push(`/search/q=${this.props.query}`);
+    this.props.push(`/search/q=${this.props.query}&facets=${JSON.stringify(this.props.selectedFacets)}`);
   };
 
   private handleQueryChange = async (e: any): Promise<void> => {
     this.props.setQuery(e.target.value);
-  };
-
-  private handleDateChange = async (e: any): Promise<void> => {
-    console.log(e)
-    if (e.target.id === 'startDate') {
-      // this.props.setStartDate(event.target.value);
-    } else {
-      // this.props.setEndDate(event.target.value);
-    }
   };
 
   public render(): React.ReactElement {
@@ -91,7 +79,7 @@ class SearchPage extends Component< (SearchCombinedProps), {}>  {
           <Row>
             <Col xs={12} sm={4}>
               <br/>
-              <FacetsBar facets={this.props.availableFacets} handleChange={this.handleDateChange}/>
+              <FacetsBar url_query={this.props.url_query}/>
             </Col>
             <Col>
               <SearchBar handleSearch={this.handleSearch} handleQueryChange={this.handleQueryChange}/>
@@ -118,7 +106,6 @@ const mapStateToProps = (state: StateType): SearchStoreProps => {
     
   return {
     itemList: state.main.itemList,
-    availableFacets: state.main.availableFacets,
     selectedFacets: state.main.selectedFacets,
     query: state.main.query,
   }
@@ -131,10 +118,6 @@ const mapDispatchToProps = (
     dispatch(setQuery(query)),
   setItemList: (itemList: Item[]) =>
     dispatch(setItemList(itemList)),
-  setAvailableFacets: (availableFacets: Facet[]) =>
-    dispatch(setAvailableFacets(availableFacets)),
-  setSelectedFacets: (selectedFacets: Facet[]) =>
-    dispatch(setSelectedFacets(selectedFacets)),
   push: (path: string) =>
     dispatch(push(path)),
 });

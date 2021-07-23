@@ -27,7 +27,7 @@ async function requestGET(requestURL: any): Promise<any> {
   return result;
 }
 
-export async function requestSearchItems(query: string, facets: Facet[]): Promise<{success: boolean, itemList: Item[]}> {
+export async function requestSearchItems(query: string, facets: {}): Promise<{success: boolean, itemList: Item[]}> {
 
   const requestURL = `${stacAPI}search?query=${query}`;
   const response = await requestGET(requestURL);

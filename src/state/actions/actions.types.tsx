@@ -7,7 +7,7 @@ export const deselectItemType = 'deselect_item';
 export const selectCollectionType = 'select_collection';
 export const deselectCollectionType = 'deselect_collection';
 export const setAvailableFacetsType = 'set_available_facets';
-export const setSelectedFacetsType = 'set_selected_facets';
+export const setSelectedFacetType = 'set_selected_facet';
 export const setLoadingType = 'set_loading';
 export const setQueryType = 'set_query';
 
@@ -40,6 +40,7 @@ export interface setAvailableFacetsPayload {
   availableFacets: Facet[];
 }
 
-export interface setSelectedFacetsPayload {
-  selectedFacets: Facet[];
+export interface setSelectedFacetPayload {
+  selectedFacet: string;
+  facetValue: any;
 }

@@ -9,11 +9,11 @@ import {
   selectCollectionType,
   deselectCollectionType,
   setAvailableFacetsType,
-  setSelectedFacetsType,
+  setSelectedFacetType,
   setQueryType,
   setLoadingPayload,
   setAvailableFacetsPayload,
-  setSelectedFacetsPayload,
+  setSelectedFacetPayload,
   setItemListPayload,
   setCollectionListPayload,
   selectItemPayload,
@@ -25,7 +25,7 @@ export const initialState: MainState = {
   itemList: [],
   collectionList: [],
   availableFacets: [],
-  selectedFacets: [],
+  selectedFacets: {},
   query: '',
   selectedItem: undefined,
   loading: true,
@@ -99,13 +99,16 @@ export function setAvailableFacets(
   };
 }
 
-export function setSelectedFacets(
+export function setSelectedFacet(
   state: MainState,
-  payload: setSelectedFacetsPayload
+  payload: setSelectedFacetPayload
 ): MainState {
+  let newSelectedFacets: any = state.selectedFacets;
+  newSelectedFacets[payload.selectedFacet] = payload.facetValue;
+  
   return {
     ...state,
-    selectedFacets: payload.selectedFacets,
+    selectedFacets: newSelectedFacets,
   };
 }
 
@@ -137,7 +140,7 @@ const MainReducer = createReducer(initialState, {
   [selectCollectionType]: selectCollection,
   [deselectCollectionType]: deselectCollection,
   [setAvailableFacetsType]: setAvailableFacets,
-  [setSelectedFacetsType]: setSelectedFacets,
+  [setSelectedFacetType]: setSelectedFacet,
   [setLoadingType]: setLoading,
   [setQueryType]: setQuery,
 })
