@@ -69,6 +69,7 @@ class App extends Component<{}, { hasError: boolean }> {
           <ConnectedRouter history={history}>
             <Switch>
                 <Route exact path="/" component={HomePage} />
+                <Route exact path="/search" component={HomePage} />
                 <Route exact path="/search/:url_query"
                   render={({ match,
                     }: RouteComponentProps<{url_query: string}>) => (

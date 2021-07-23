@@ -11,9 +11,9 @@ class AssetList extends React.Component<Props, {}> {
     const assetTable = this.props.assets.map(asset => {
       let tableRow = (
 
-        <tr key={`${asset.id.toString()}`}>
+        <tr key={`${asset.id}`}>
           <td>
-          <p style={{fontSize:'14px', marginBottom:'0'}}>{asset.id.toString()}</p>
+          <p style={{fontSize:'14px', marginBottom:'0'}}>{asset.title}</p>
               <p style={{color: 'grey', fontSize:'12px', marginBottom:'0'}}>&nbsp;&nbsp;&nbsp;&nbsp;{asset.type}</p>
           </td>
         </tr>
