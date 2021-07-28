@@ -103,12 +103,12 @@ export function setSelectedFacet(
   state: MainState,
   payload: setSelectedFacetPayload
 ): MainState {
-  let newSelectedFacets: any = state.selectedFacets;
-  newSelectedFacets[payload.selectedFacet] = payload.facetValue;
-  
   return {
     ...state,
-    selectedFacets: newSelectedFacets,
+    selectedFacets: {
+      ...state.selectedFacets,
+      [payload.selectedFacet]: payload.facetValue,
+    }
   };
 }
 

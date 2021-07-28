@@ -43,7 +43,6 @@ class ItemPage extends Component<ItemCombinedProps, {}>  {
     };
     if (result.success && result.item) {
     };
-
   }
   
   public selectItem = async (item: Item): Promise<void> => {
@@ -64,10 +63,12 @@ class ItemPage extends Component<ItemCombinedProps, {}>  {
                 <AssetList assets={this.props.selectedItem.assets} />
               </Col>
               <Col>
-              { this.props.collection_id && 
-                <><Temporal interval={[this.props.selectedItem.properties.datetime, this.props.selectedItem.properties.datetime]}/><br/></> 
+              { this.props.selectedItem.properties.datetime && 
+                <><Temporal interval={[this.props.selectedItem.properties.datetime]}/><br/></> 
               }
-                <Spacial bbox={this.props.selectedItem.bbox}/><br/>
+              { this.props.selectedItem.bbox && 
+                <><Spacial bbox={this.props.selectedItem.bbox}/><br/></>
+              }
                 <MetaDataList metaData={this.props.selectedItem.properties} />
               </Col>
             </Row>

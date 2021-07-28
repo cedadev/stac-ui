@@ -87,11 +87,11 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
               </Row>
               <Row>
                 <Col style={{width:'33%'}}>
-                  <input type='number' step='.0001' style={{width:'100%'}} min='0' max='180' placeholder='East' name="eastBbox" onChange={this.handleFacetChange}/>
+                  <input type='number' step='.0001' style={{width:'100%'}} min='-180' max='0' placeholder='West' name="westBbox" onChange={this.handleFacetChange}/>
                 </Col>
                 <Col style={{width:'33%'}}/>
                 <Col style={{width:'33%'}}>
-                  <input type='number' step='.0001' style={{width:'100%'}} min='-180' max='0' placeholder='West' name="westBbox" onChange={this.handleFacetChange}/>
+                  <input type='number' step='.0001' style={{width:'100%'}} min='0' max='180' placeholder='East' name="eastBbox" onChange={this.handleFacetChange}/>
                 </Col>
               </Row>
               <Row>
