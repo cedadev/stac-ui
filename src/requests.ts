@@ -1,9 +1,9 @@
-import { stacAPI } from './config';
+// import { process.env.REACT_APP_STAC_API } from './config';
 import { Item, Facet, Collection } from './types';
 // import {items_data, collection_data} from './data.js';
 
 // async function requestPOST(requestBody: any): Promise<any> {
-//   const response = await fetch(stacAPI, {
+//   const response = await fetch(process.env.REACT_APP_STAC_API, {
 //     method: 'POST',
 //     headers: {
 //       'Content-Type': 'application/json;charset=UTF-8',
@@ -29,7 +29,7 @@ async function requestGET(requestURL: any): Promise<any> {
 
 export async function requestSearchItems(query: string, facets: {}): Promise<{success: boolean, itemList: Item[]}> {
 
-  const requestURL = `${stacAPI}search?query=${query}`;
+  const requestURL = `${process.env.REACT_APP_STAC_API}search?query=${query}`;
   const response = await requestGET(requestURL);
   var itemList = response['features'].map( function(i: any) {
     return {
@@ -50,7 +50,7 @@ export async function requestSearchItems(query: string, facets: {}): Promise<{su
 
 export async function requestItem(collection_id: string, item_id: string): Promise<{success: boolean, item: Item|undefined}> {
 
-  const requestURL = `${stacAPI}collections/${collection_id}/items/${item_id}`;
+  const requestURL = `${process.env.REACT_APP_STAC_API}collections/${collection_id}/items/${item_id}`;
   const response = await requestGET(requestURL);
   const item: Item = {
     id: response.id,
@@ -78,7 +78,7 @@ export async function requestItem(collection_id: string, item_id: string): Promi
 
 export async function requestCollection(collection_id: string): Promise<{success: boolean, collection: Collection|undefined}> {
    
-  const requestURL = `${stacAPI}collections/${collection_id}`;
+  const requestURL = `${process.env.REACT_APP_STAC_API}collections/${collection_id}`;
   const response = await requestGET(requestURL);
   const items = (await requestCollectionItems(collection_id)).items;
   var collection: Collection = {
@@ -110,7 +110,7 @@ export async function requestCollection(collection_id: string): Promise<{success
 
 export async function requestCollectionItems(collection_id: string): Promise<{success: boolean, items: Item[]}> {
   
-  const requestURL = `${stacAPI}collections/${collection_id}/items`;
+  const requestURL = `${process.env.REACT_APP_STAC_API}collections/${collection_id}/items`;
   const response = await requestGET(requestURL);
   var items = response['features'].map( function(i: any) {
     return {
@@ -132,7 +132,7 @@ export async function requestCollectionItems(collection_id: string): Promise<{su
 
 export async function requestFacets(): Promise<{success: boolean, availableFacets: Facet[]}> {
   
-  const requestURL = `${stacAPI}queryables`;
+  const requestURL = `${process.env.REACT_APP_STAC_API}queryables`;
   const response = await requestGET(requestURL);
   var availableFacets = Object.keys(response.properties).map( function(key: string) {
     var value = response.properties[key];
@@ -152,7 +152,7 @@ export async function requestFacets(): Promise<{success: boolean, availableFacet
 
 export async function requestCollectionList(): Promise<{success: boolean, collectionList: Collection[]}> {
   
-  const requestURL = `${stacAPI}collections`;
+  const requestURL = `${process.env.REACT_APP_STAC_API}collections`;
   const response = await requestGET(requestURL);
   var collectionList: Collection[] = await Promise.all(response.map( async function(c: any): Promise<Collection> {
     const items = (await requestCollectionItems(c.id)).items;
