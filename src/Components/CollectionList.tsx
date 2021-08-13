@@ -31,7 +31,8 @@ class CollectionList extends React.Component<Props, {}> {
   }
 
   public render(): React.ReactElement {
-    return <><ListGroup>{this.buildCollectionList()}</ListGroup><Pagination/></>;
+
+    return <><ListGroup>{this.buildCollectionList()}</ListGroup></>;
   }
 }
 

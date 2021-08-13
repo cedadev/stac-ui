@@ -66,7 +66,7 @@ ${('southBbox' in selectedFacets  && selectedFacets.southBbox !== '') ? selected
     const datetimeString = `${('startTime' in selectedFacets) ? selectedFacets.startTime:'..'}:${('endTime' in selectedFacets) ? selectedFacets.endTime:'..'}`;
 
     const url = `?\
-${`query=${this.props.query ? this.props.query:''}`}\
+${`q=${this.props.query ? this.props.query:''}`}\
 ${(datetimeString !== '..:..') ? `&datetime=${datetimeString}`:''}\
 ${(bboxString !== '180,90,-180,-90') ? `&bbox=${bboxString}`:''}\
 ${`${this.props.page && this.props.page !== 1 ? `&page=${this.props.page}`:''}`}\

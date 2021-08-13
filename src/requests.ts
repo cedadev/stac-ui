@@ -152,7 +152,7 @@ export async function requestCollectionList(): Promise<{success: boolean, collec
   
   const requestURL = `${process.env.REACT_APP_STAC_API}collections`;
   const response = await requestGET(requestURL);
-  var collectionList: Collection[] = await Promise.all(response.map( async function(c: any): Promise<Collection> {
+  var collectionList: Collection[] = await Promise.all(response['collections'].map( async function(c: any): Promise<Collection> {
     return {
       id: c.id,
       title: c.title,
