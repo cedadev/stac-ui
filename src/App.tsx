@@ -10,7 +10,6 @@ import AppReducer from './state/reducers/app.reducer';
 import thunk from 'redux-thunk';
 import SearchPage from './Pages/SearchPage';
 import ItemPage from './Pages/ItemPage';
-import HomePage from './Pages/HomePage';
 import CollectionPage from './Pages/CollectionPage';
 import CollectionsPage from './Pages/CollectionListPage';
 
@@ -68,15 +67,9 @@ class App extends Component<{}, { hasError: boolean }> {
         <Provider store={store}>
           <ConnectedRouter history={history}>
             <Switch>
-                <Route exact path="/" component={HomePage} />
-                <Route exact path="/search" component={HomePage} />
-                <Route exact path="/search/:url_query"
-                  render={({ match,
-                    }: RouteComponentProps<{url_query: string}>) => (
-                      <SearchPage url_query={match.params.url_query}/>
-                  )}
-                />
-                <Route exact path="/collections/" component={CollectionsPage} />
+                <Route exact path="/" component={SearchPage} />
+                <Route exact path="/search" component={SearchPage} />
+                <Route exact path="/collections" component={CollectionsPage} />
                 <Route exact path="/collections/:collection_id"
                   render={({ match,
                     }: RouteComponentProps<{collection_id: string,}>) => (

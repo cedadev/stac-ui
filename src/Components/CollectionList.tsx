@@ -1,6 +1,8 @@
 import React from 'react';
 import { Collection } from '../types'
 import ListGroup from 'react-bootstrap/ListGroup';
+import Pagination from "../Components/Pagination";
+
 
 interface Props {
   collections: Collection[];
@@ -29,7 +31,7 @@ class CollectionList extends React.Component<Props, {}> {
   }
 
   public render(): React.ReactElement {
-    return <ListGroup>{this.buildCollectionList()}</ListGroup>;
+    return <><ListGroup>{this.buildCollectionList()}</ListGroup><Pagination/></>;
   }
 }
 

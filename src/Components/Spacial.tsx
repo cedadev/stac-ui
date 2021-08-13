@@ -9,9 +9,7 @@ interface Props {
 class Spacial extends React.Component<Props, {}> {
 
   public render(): React.ReactElement {
-    console.log(this.props.bbox)
     if (this.props.bbox.length === 4) {
-      console.log('it equals 4')
       return (
         <ListGroup>
           <h5>Geographic Extent</h5>
