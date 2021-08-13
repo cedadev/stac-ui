@@ -6,19 +6,26 @@ import {
   setCollectionListType,
   selectItemType,
   deselectItemType,
-  selectCollectionType,
-  deselectCollectionType,
+  setCollectionType,
+  unsetCollectionType,
   setAvailableFacetsType,
   setSelectedFacetType,
+  setBboxFacetType,
+  setDatetimeFacetType,
   setQueryType,
+  setPageType,
+  setMaxPageType,
+  setPageUrlType,
   setLoadingPayload,
   setAvailableFacetsPayload,
   setSelectedFacetPayload,
   setItemListPayload,
   setCollectionListPayload,
   selectItemPayload,
-  selectCollectionPayload,
+  setCollectionPayload,
   setQueryPayload,
+  setPagePayload,
+  setPageUrlPayload,
 } from "../actions/actions.types";
 
 export const initialState: MainState = {
@@ -26,9 +33,14 @@ export const initialState: MainState = {
   collectionList: [],
   availableFacets: [],
   selectedFacets: {},
+  bboxFacet: {},
+  datetimeFacet: {},
   query: '',
   selectedItem: undefined,
   loading: true,
+  page: undefined,
+  maxPage: undefined,
+  pageUrl: undefined,
 };
 
 export function setItemList(
@@ -61,9 +73,9 @@ export function selectItem(
   };
 }
 
-export function selectCollection(
+export function setCollection(
   state: MainState,
-  payload: selectCollectionPayload
+  payload: setCollectionPayload
 ): MainState {
   return {
     ...state,
@@ -80,7 +92,7 @@ export function deselectItem(
   };
 }
 
-export function deselectCollection(
+export function unsetCollection(
   state: MainState,
 ): MainState {
   return {
@@ -103,13 +115,60 @@ export function setSelectedFacet(
   state: MainState,
   payload: setSelectedFacetPayload
 ): MainState {
-  return {
-    ...state,
-    selectedFacets: {
-      ...state.selectedFacets,
-      [payload.selectedFacet]: payload.facetValue,
-    }
+  if (payload.facetValue) {
+    return {
+      ...state,
+      selectedFacets: {
+        ...state.selectedFacets,
+        [payload.selectedFacet]: payload.facetValue,
+      }
+    };
+  } else {
+    var newState: any = state;
+    delete newState.selectedFacets[payload.selectedFacet];
+    return newState;
   };
+  
+}
+
+export function setBboxFacet(
+  state: MainState,
+  payload: setSelectedFacetPayload
+): MainState {
+  if (payload.facetValue) {
+    return {
+      ...state,
+      selectedFacets: {
+        ...state.bboxFacet,
+        [payload.selectedFacet]: payload.facetValue,
+      }
+    };
+  } else {
+    var newState: any = state;
+    delete newState.bbox[payload.selectedFacet];
+    return newState;
+  };
+  
+}
+
+export function setDatetimeFacet(
+  state: MainState,
+  payload: setSelectedFacetPayload
+): MainState {
+  if (payload.facetValue) {
+    return {
+      ...state,
+      selectedFacets: {
+        ...state.datetimeFacet,
+        [payload.selectedFacet]: payload.facetValue,
+      }
+    };
+  } else {
+    var newState: any = state;
+    delete newState.datetime[payload.selectedFacet];
+    return newState;
+  };
+  
 }
 
 export function setLoading(
@@ -132,17 +191,52 @@ export function setQuery(
   };
 }
 
+export function setPage(
+  state: MainState,
+  payload: setPagePayload,
+): MainState {
+  return {
+    ...state,
+    page: payload.page,
+  };
+}
+
+export function setMaxPage(
+  state: MainState,
+  payload: setPagePayload,
+): MainState {
+  return {
+    ...state,
+    maxPage: payload.page,
+  };
+}
+
+export function setPageUrl(
+  state: MainState,
+  payload: setPageUrlPayload,
+): MainState {
+  return {
+    ...state,
+    pageUrl: payload.url,
+  };
+}
+
 const MainReducer = createReducer(initialState, {
   [setItemListType]: setItemList,
   [setCollectionListType]: setCollectionList,
   [selectItemType]: selectItem,
   [deselectItemType]: deselectItem,
-  [selectCollectionType]: selectCollection,
-  [deselectCollectionType]: deselectCollection,
+  [setCollectionType]: setCollection,
+  [unsetCollectionType]: unsetCollection,
   [setAvailableFacetsType]: setAvailableFacets,
   [setSelectedFacetType]: setSelectedFacet,
+  [setBboxFacetType]: setBboxFacet,
+  [setDatetimeFacetType]: setDatetimeFacet,
   [setLoadingType]: setLoading,
   [setQueryType]: setQuery,
+  [setPageType]: setPage,
+  [setMaxPageType]: setMaxPage,
+  [setPageUrlType]: setPageUrl,
 })
 
 export default MainReducer;

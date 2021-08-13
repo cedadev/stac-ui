@@ -5,12 +5,17 @@ import { AnyAction } from 'redux';
 export interface MainState {
   itemList: Item[];
   collectionList: Collection[];
-  selectedFacets: object;
+  selectedFacets: {};
+  bboxFacet: {};
+  datetimeFacet: {};
   availableFacets: Facet[];
   selectedItem?: Item;
   selectedCollection?: Collection;
   loading: boolean;
   query: string;
+  page?: number;
+  maxPage?: number;
+  pageUrl?: string;
 }
 
 export interface StateType {

@@ -2,19 +2,7 @@ import { stacAPI } from './config';
 import { Item, Facet, Collection } from './types';
 // import {items_data, collection_data} from './data.js';
 
-// async function requestPOST(requestBody: any): Promise<any> {
-//   const response = await fetch(stacAPI, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json;charset=UTF-8',
-//     },
-//     body: JSON.stringify(requestBody),
-//   });
-//   const result = await response.json();
-//   return result;
-// }
-
-async function requestGET(requestURL: any): Promise<any> {
+async function requestGET(requestURL: string): Promise<any> {
   console.log(requestURL)
   const response = await fetch(requestURL, {
     method: 'GET',
@@ -23,23 +11,30 @@ async function requestGET(requestURL: any): Promise<any> {
     }
   });
   const result = await response.json();
-  console.log(result)
   return result;
 }
 
-export async function requestSearchItems(query: string, facets: {}): Promise<{success: boolean, itemList: Item[]}> {
+export async function requestSearchItems(url: string): Promise<{success: boolean, itemList: Item[]}> {
 
-  const requestURL = `${stacAPI}search?query=${query}`;
+  const requestURL = `${stacAPI}search${url}`;
   const response = await requestGET(requestURL);
-  var itemList = response['features'].map( function(i: any) {
-    return {
+  const collectionList: Collection[]= [];
+  const itemList: Item[] = [];
+
+  for (const i of response['features']) {
+    var collection = collectionList.find(c => c.id === i.collection);
+    if (!collection) {
+      collection = (await requestCollection(i.collection)).collection;
+      collectionList.push(collection);
+    };
+    itemList.push({
       id: i.id,
       bbox: i.bbox,
       properties: i.properties,
       assets: i.assets,
-      collection_id: i.collection
-    };
-  });
+      collection: collection
+    });
+  };
 
   const result = {
     success: true,
@@ -52,6 +47,7 @@ export async function requestItem(collection_id: string, item_id: string): Promi
 
   const requestURL = `${stacAPI}collections/${collection_id}/items/${item_id}`;
   const response = await requestGET(requestURL);
+  const collection: Collection = (await requestCollection(collection_id)).collection;
   const item: Item = {
     id: response.id,
     bbox: response.bbox,
@@ -66,9 +62,8 @@ export async function requestItem(collection_id: string, item_id: string): Promi
         roles: value.roles,
       }
     }),
-    collection_id: response.collection
+    collection: collection
   };
-
   const result = {
     success: true,
     item: item
@@ -76,11 +71,10 @@ export async function requestItem(collection_id: string, item_id: string): Promi
   return result;
 }
 
-export async function requestCollection(collection_id: string): Promise<{success: boolean, collection: Collection|undefined}> {
+export async function requestCollection(collection_id: string): Promise<{success: boolean, collection: Collection}> {
    
   const requestURL = `${stacAPI}collections/${collection_id}`;
   const response = await requestGET(requestURL);
-  const items = (await requestCollectionItems(collection_id)).items;
   var collection: Collection = {
     id: response.id,
     title: response.title,
@@ -96,11 +90,8 @@ export async function requestCollection(collection_id: string): Promise<{success
       platform: response.summaries.platform,
       flight_number: response.summaries.flight_number,
     },
-    items: items,
   };
 
-  console.log(collection);
-  
   const result = {
     success: true,
     collection: collection
@@ -108,9 +99,9 @@ export async function requestCollection(collection_id: string): Promise<{success
   return result;
 }
 
-export async function requestCollectionItems(collection_id: string): Promise<{success: boolean, items: Item[]}> {
+export async function requestCollectionItems(collection: Collection): Promise<{success: boolean, items: Item[]}> {
   
-  const requestURL = `${stacAPI}collections/${collection_id}/items`;
+  const requestURL = `${stacAPI}collections/${collection.id}/items`;
   const response = await requestGET(requestURL);
   var items = response['features'].map( function(i: any) {
     return {
@@ -118,7 +109,7 @@ export async function requestCollectionItems(collection_id: string): Promise<{su
       bbox: i.bbox,
       properties: i.properties,
       assets: i.assets,
-      collection_id: i.collection
+      collection: collection
     };
   });
   
@@ -130,18 +121,25 @@ export async function requestCollectionItems(collection_id: string): Promise<{su
 }
 
 
-export async function requestFacets(): Promise<{success: boolean, availableFacets: Facet[]}> {
+export async function requestFacets(collection?:string): Promise<{success: boolean, availableFacets: Facet[]}> {
   
-  const requestURL = `${stacAPI}queryables`;
+  const requestURL = collection ? `${stacAPI}collections/${collection}/queryables` : `${stacAPI}queryables`;
   const response = await requestGET(requestURL);
-  var availableFacets = Object.keys(response.properties).map( function(key: string) {
-    var value = response.properties[key];
-      return {
-        id: key,
-        title: value.title,
-        value: value.value,
-      }
-  });
+  const properties = response['properties'];
+  // Remove bbox and datetime as these are handled seperately.
+  delete properties.bbox;
+  delete properties.datetime;
+
+  const availableFacets = [];
+  for (const key in properties) {
+    const f = properties[key];
+    availableFacets.push({
+      id: key,
+      title: f.title,
+      type: f.type,
+      options: f.enum,
+    });
+  };
   
   const result = {
     success: true,
@@ -155,7 +153,6 @@ export async function requestCollectionList(): Promise<{success: boolean, collec
   const requestURL = `${stacAPI}collections`;
   const response = await requestGET(requestURL);
   var collectionList: Collection[] = await Promise.all(response.map( async function(c: any): Promise<Collection> {
-    const items = (await requestCollectionItems(c.id)).items;
     return {
       id: c.id,
       title: c.title,
@@ -172,10 +169,9 @@ export async function requestCollectionList(): Promise<{success: boolean, collec
         platform: c.summaries.platform,
         flight_number: c.summaries.flight_number,
       },
-      items: items,
     };
   }));
-  console.log(`collectionList: ${collectionList}`)
+  
   
   const result = {
     success: true,

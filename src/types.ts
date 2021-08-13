@@ -14,7 +14,6 @@ export type Collection = {
     platform: string[];
     flight_number: string[];
   };
-  items: Item[];
 };
 
 export type Item = {
@@ -22,7 +21,7 @@ export type Item = {
   bbox: number[];
   properties: any;
   assets: Asset[];
-  collection_id: string;
+  collection: Collection;
 };
 
 export type Asset = {
@@ -36,5 +35,7 @@ export type Asset = {
 export type Facet = {
     id: string;
     title: string;
-    value: any;
+    type: string;
+    options?: [];
+    value?: any;
 };

@@ -7,8 +7,11 @@ import {
     setAvailableFacetsType,
     setSelectedFacetType,
     setQueryType,
-    deselectCollectionType,
-    selectCollectionType,
+    unsetCollectionType,
+    setCollectionType,
+    setPageType,
+    setMaxPageType,
+    setPageUrlType,
     setItemListPayload,
     setCollectionListPayload,
     selectItemPayload,
@@ -16,7 +19,9 @@ import {
     setAvailableFacetsPayload,
     setSelectedFacetPayload,
     setQueryPayload,
-    selectCollectionPayload,
+    setCollectionPayload,
+    setPagePayload,
+    setPageUrlPayload,
   } from './actions.types';
   import { ActionType } from '../app.types';
   import { Facet, Item, Collection } from '../../types';
@@ -53,17 +58,17 @@ import {
     return { type: deselectItemType }
   }
 
-  export const selectCollection = (
+  export const setCollection = (
     collection: Collection
-  ): ActionType<selectCollectionPayload> => ({
-    type: selectCollectionType,
+  ): ActionType<setCollectionPayload> => ({
+    type: setCollectionType,
     payload: {
       collection,
     },
   });
   
-  export function deselectCollection() {
-    return { type: deselectCollectionType }
+  export function unsetCollection() {
+    return { type: unsetCollectionType }
   }
 
   export const setAvailableFacets = (
@@ -76,6 +81,28 @@ import {
   });
 
   export const setSelectedFacet = (
+    selectedFacet: string,
+    facetValue: any,
+  ): ActionType<setSelectedFacetPayload> => ({
+    type: setSelectedFacetType,
+    payload: {
+      selectedFacet,
+      facetValue
+    },
+  });
+
+  export const setBboxFacet = (
+    selectedFacet: string,
+    facetValue: any,
+  ): ActionType<setSelectedFacetPayload> => ({
+    type: setSelectedFacetType,
+    payload: {
+      selectedFacet,
+      facetValue
+    },
+  });
+
+  export const setDatetimeFacet = (
     selectedFacet: string,
     facetValue: any,
   ): ActionType<setSelectedFacetPayload> => ({
@@ -101,5 +128,32 @@ import {
     type: setQueryType,
     payload: {
       query,
+    },
+  });
+
+  export const setPage = (
+    page: number
+  ): ActionType<setPagePayload> => ({
+    type: setPageType,
+    payload: {
+      page,
+    },
+  });
+
+  export const setMaxPage = (
+    page: number
+  ): ActionType<setPagePayload> => ({
+    type: setMaxPageType,
+    payload: {
+      page,
+    },
+  });
+
+  export const setPageUrl = (
+    url: string
+  ): ActionType<setPageUrlPayload> => ({
+    type: setPageUrlType,
+    payload: {
+      url,
     },
   });

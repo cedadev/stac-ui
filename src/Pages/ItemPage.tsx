@@ -55,7 +55,7 @@ class ItemPage extends Component<ItemCombinedProps, {}>  {
         <>
           <NavBar/>
           <Container>
-            <BreadCrumb collection_id={this.props.selectedItem.collection_id} item_id={this.props.selectedItem.id}/>
+            <BreadCrumb collection={this.props.selectedItem.collection} item_id={this.props.selectedItem.id}/>
             <Row>
               <Col xs={12} sm={8} style={{textAlign: 'left'}}>
                 <h3 style={{marginBottom:'1em'}}>{this.props.selectedItem.id}</h3>
