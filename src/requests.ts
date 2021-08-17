@@ -1,5 +1,5 @@
 import { stacAPI } from './config';
-import { Item, Facet, Collection } from './types';
+import { Item, Facet, Collection, Context } from './types';
 // import {items_data, collection_data} from './data.js';
 
 async function requestGET(requestURL: string): Promise<any> {
@@ -14,7 +14,7 @@ async function requestGET(requestURL: string): Promise<any> {
   return result;
 }
 
-export async function requestSearchItems(url: string): Promise<{success: boolean, itemList: Item[]}> {
+export async function requestSearchItems(url: string): Promise<{success: boolean, itemList: Item[], context:Context}> {
 
   const requestURL = `${stacAPI}search${url}`;
   const response = await requestGET(requestURL);
@@ -38,7 +38,8 @@ export async function requestSearchItems(url: string): Promise<{success: boolean
 
   const result = {
     success: true,
-    itemList: itemList
+    itemList: itemList,
+    context: response['context']
   };
   return result;
 }
@@ -99,7 +100,7 @@ export async function requestCollection(collection_id: string): Promise<{success
   return result;
 }
 
-export async function requestCollectionItems(collection: Collection): Promise<{success: boolean, items: Item[]}> {
+export async function requestCollectionItems(collection: Collection): Promise<{success: boolean, items: Item[], context: Context}> {
   
   const requestURL = `${stacAPI}collections/${collection.id}/items`;
   const response = await requestGET(requestURL);
@@ -115,7 +116,8 @@ export async function requestCollectionItems(collection: Collection): Promise<{s
   
   const result = {
     success: true,
-    items: items
+    items: items,
+    context: response['context']
   };
   return result;
 }
@@ -152,7 +154,8 @@ export async function requestCollectionList(): Promise<{success: boolean, collec
   
   const requestURL = `${stacAPI}collections`;
   const response = await requestGET(requestURL);
-  var collectionList: Collection[] = await Promise.all(response.map( async function(c: any): Promise<Collection> {
+  console.log(response);
+  var collectionList: Collection[] = await Promise.all(response['collections'].map( async function(c: any): Promise<Collection> {
     return {
       id: c.id,
       title: c.title,

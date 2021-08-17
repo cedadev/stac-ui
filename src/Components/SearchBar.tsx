@@ -2,20 +2,21 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import React, { Component, ReactElement } from 'react';
-import { Item, Collection } from '../types';
+import { Item, Collection, Context } from '../types';
 import { requestSearchItems } from '../requests';
 import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { push } from 'connected-react-router';
-import { setQuery, setItemList } from '../state/actions/actions';
+import { setQuery, setItemList, setContext } from '../state/actions/actions';
 import queryString from 'query-string';
 
 
 interface SearchBarStoreProps {
   query: string;
   selectedFacets: object;
+  context: Context;
   page?: number;
   collection?: Collection;
 }
@@ -24,6 +25,7 @@ interface SearchBarDispatchProps {
   setQuery: (query: string) => Action;
   push: (path: string) => Action;
   setItemList: (itemList: Item[]) => Action;
+  setContext: (context: Context) => Action;
 }
 
 type SearchBarCombinedProps = SearchBarStoreProps & SearchBarDispatchProps;
@@ -48,6 +50,7 @@ class SearchBar extends Component<SearchBarCombinedProps, {}> {
     const result = await requestSearchItems(url);
     if (result.success) {
       this.props.setItemList(result.itemList);
+      this.props.setContext(result.context);
     }
   };
 
@@ -109,6 +112,7 @@ const mapStateToProps = (state: StateType): SearchBarStoreProps => {
     
   return {
     selectedFacets: state.main.selectedFacets,
+    context: state.main.context,
     page: state.main.page,
     query: state.main.query,
     collection: state.main.selectedCollection,
@@ -122,6 +126,8 @@ const mapDispatchToProps = (
     dispatch(setQuery(query)),
   setItemList: (itemList: Item[]) =>
     dispatch(setItemList(itemList)),
+  setContext: (context: Context) =>
+    dispatch(setContext(context)),
   push: (path: string) =>
     dispatch(push(path)),
 });
