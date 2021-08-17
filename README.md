@@ -5,6 +5,13 @@ UI for STAC API
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Setting up for Development
+
+1. Clone the repo `git clone https://github.com/cedadev/stac-ui`
+2. Enter the repo and run `yarn install`
+3. Export the STAC API URL. `export REACT_APP_STAC_API="https://stac-elasticsearch-master.130.246.131.9.nip.io/"`
+4. Run the applicaiton in development mode `yarn start`
+
 ## Available Scripts
 
 In the project directory, you can run:
