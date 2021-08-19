@@ -21,43 +21,6 @@ interface ItemListDispatchProps {
   push: (path: string) => Action;
 }
 
-interface PropListProps {
-  properties?: any;
-}
-
-
-class PropList extends React.Component<PropListProps, {}> {
-
-  private buildPropList(): React.ReactElement[] {
-    const properties = this.props.properties;
-    const propKeys = Object.keys(properties);
-    const badgeProps = propKeys.map(property => {
-      let badge = (
-          <Badge variant="secondary" className="mb-1 prop-badge">{property} : {properties[property]}</Badge>
-      );
-      return badge;
-    })
-
-    let propRows = [];
-    let i,j, temp, chunk=3;
-    for (i=0, j=badgeProps.length; i <j; i+=chunk){
-      let temp = badgeProps.slice(i, i+chunk);
-      let row = temp.map(b => {
-        return (<Col lg={4}>{b}</Col>)
-      })
-      propRows.push(<Row>{row}</Row>
-      )
-    }
-
-    return propRows;
-
-  }
-
-  public render(): React.ReactElement {
-
-    return <>{this.buildPropList()}</>
-  }
-}
 
 class ItemList extends React.Component<ItemListStoreProps & ItemListDispatchProps, {}> {
 
@@ -65,8 +28,13 @@ class ItemList extends React.Component<ItemListStoreProps & ItemListDispatchProp
     this.props.push(`/collections/${item.collection.id}/items/${item.id}`);
   };
 
-  private buildItemList(): React.ReactElement[] {
+private buildItemList(): React.ReactElement[] {
+
     const itemList = this.props.itemList.map(item => {
+      const badges = [];
+      for (const [key, value] of Object.entries(item.properties)) {
+        badges.push(<span key={key} className="badge badge-secondary" style={{margin:'1px', fontSize:'90%'}}>{`${key}:${value}`}</span>)
+      };
 
       let listItem = (
         <ListGroup.Item
@@ -74,12 +42,12 @@ class ItemList extends React.Component<ItemListStoreProps & ItemListDispatchProp
           id="item-list-item"
           key={item.id.toString()}
           onClick={() => {this.handleItemClick(item);}}
-          style={{textAlign: 'left'}}   
+          style={{textAlign: 'left', wordWrap: 'break-word'}}
         >
           {!this.props.collection &&
             <p>Collection: <a href={`/collections/${item.collection.id}`}>{item.collection.title}</a></p>
           }
-          <PropList properties={item.properties}/>
+          {badges}
         </ListGroup.Item>
       );
       return listItem;
