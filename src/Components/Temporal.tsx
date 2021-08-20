@@ -14,7 +14,7 @@ class Temporal extends React.Component<Props, {}> {
           <ListGroup.Item
               id="temporal-list-item"
             >
-              {this.props.interval.length === 2 ? 
+              {this.props.interval.length === 2 && this.props.interval[1] ? 
               <>
                 Start Time: <code>{`${this.props.interval[0]}`}</code><br/>
                 End Time: <code>{`${this.props.interval[1]}`}</code>

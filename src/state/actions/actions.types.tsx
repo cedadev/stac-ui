@@ -1,5 +1,4 @@
-import { Facet, Item, Collection } from "../../types";
-
+import { Facet, Item, Collection, Context } from "../../types";
 export const setItemListType = 'set_item_list';
 export const setCollectionListType = 'set_collection_list';
 export const selectItemType = 'select_item';
@@ -12,10 +11,8 @@ export const setBboxFacetType = 'set_bbox_facet';
 export const setDatetimeFacetType = 'set_datetime_facet';
 export const setLoadingType = 'set_loading';
 export const setQueryType = 'set_query';
-export const setPageType = 'set_page';
-export const setMaxPageType = 'set_max_page';
-export const setPageUrlType = 'set_link_url';
-
+export const setContextType = 'set_context';
+export const setLimitType = 'set_limit';
 
 
 export interface setItemListPayload {
@@ -51,10 +48,10 @@ export interface setSelectedFacetPayload {
   facetValue: any;
 }
 
-export interface setPagePayload {
-  page: number;
+export interface setContextPayload {
+  context: Context;
 }
 
-export interface setPageUrlPayload {
-  url: string;
+export interface setLimitPayload {
+  limit: number;
 }

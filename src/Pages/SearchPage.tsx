@@ -6,9 +6,11 @@ import ItemList from '../Components/ItemList';
 import NavBar from "../Components/NavBar";
 import FacetsBar from "../Components/FacetsBar";
 import SearchBar from "../Components/SearchBar";
+import SearchButton from "../Components/SearchButton";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 
 interface SearchStoreProps {
@@ -34,17 +36,19 @@ class SearchPage extends Component< (SearchCombinedProps), {}>  {
             </Col>
             <Col>
               <h2>CEDA Search</h2>
-              <SearchBar/>
+              <InputGroup className="mb-3">
+                <SearchBar/>
+                <InputGroup.Append>
+                  <SearchButton />
+                </InputGroup.Append>
+              </InputGroup>
               {window.location.search &&
-              <>
-              <div style={{borderBottom: '1px solid grey', textAlign: 'right'}}>{this.props.itemList.length} Results</div>
               <>
                 {this.props.itemList !== [] ? (
                   <ItemList/>
                 ) : (
                   <p>No match found</p>
                 )}
-              </>
               </>
               }
             </Col>

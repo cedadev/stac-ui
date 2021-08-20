@@ -13,9 +13,8 @@ import {
   setBboxFacetType,
   setDatetimeFacetType,
   setQueryType,
-  setPageType,
-  setMaxPageType,
-  setPageUrlType,
+  setContextType,
+  setLimitType,
   setLoadingPayload,
   setAvailableFacetsPayload,
   setSelectedFacetPayload,
@@ -24,8 +23,8 @@ import {
   selectItemPayload,
   setCollectionPayload,
   setQueryPayload,
-  setPagePayload,
-  setPageUrlPayload,
+  setContextPayload,
+  setLimitPayload,
 } from "../actions/actions.types";
 
 export const initialState: MainState = {
@@ -35,12 +34,10 @@ export const initialState: MainState = {
   selectedFacets: {},
   bboxFacet: {},
   datetimeFacet: {},
+  context: undefined,
   query: '',
   selectedItem: undefined,
   loading: true,
-  page: undefined,
-  maxPage: undefined,
-  pageUrl: undefined,
 };
 
 export function setItemList(
@@ -138,17 +135,16 @@ export function setBboxFacet(
   if (payload.facetValue) {
     return {
       ...state,
-      selectedFacets: {
+      bboxFacet: {
         ...state.bboxFacet,
         [payload.selectedFacet]: payload.facetValue,
       }
     };
   } else {
     var newState: any = state;
-    delete newState.bbox[payload.selectedFacet];
+    delete newState.bboxFacet[payload.selectedFacet];
     return newState;
   };
-  
 }
 
 export function setDatetimeFacet(
@@ -158,14 +154,14 @@ export function setDatetimeFacet(
   if (payload.facetValue) {
     return {
       ...state,
-      selectedFacets: {
+      datetimeFacet: {
         ...state.datetimeFacet,
         [payload.selectedFacet]: payload.facetValue,
       }
     };
   } else {
     var newState: any = state;
-    delete newState.datetime[payload.selectedFacet];
+    delete newState.datetimeFacet[payload.selectedFacet];
     return newState;
   };
   
@@ -191,35 +187,26 @@ export function setQuery(
   };
 }
 
-export function setPage(
+export function setContext(
   state: MainState,
-  payload: setPagePayload,
+  payload: setContextPayload,
 ): MainState {
   return {
     ...state,
-    page: payload.page,
+    context: payload.context,
   };
 }
 
-export function setMaxPage(
+export function setLimit(
   state: MainState,
-  payload: setPagePayload,
+  payload: setLimitPayload,
 ): MainState {
   return {
     ...state,
-    maxPage: payload.page,
+    limit: payload.limit,
   };
 }
 
-export function setPageUrl(
-  state: MainState,
-  payload: setPageUrlPayload,
-): MainState {
-  return {
-    ...state,
-    pageUrl: payload.url,
-  };
-}
 
 const MainReducer = createReducer(initialState, {
   [setItemListType]: setItemList,
@@ -234,9 +221,8 @@ const MainReducer = createReducer(initialState, {
   [setDatetimeFacetType]: setDatetimeFacet,
   [setLoadingType]: setLoading,
   [setQueryType]: setQuery,
-  [setPageType]: setPage,
-  [setMaxPageType]: setMaxPage,
-  [setPageUrlType]: setPageUrl,
+  [setContextType]: setContext,
+  [setLimitType]: setLimit,
 })
 
 export default MainReducer;

@@ -11,7 +11,9 @@ async function requestGET(requestURL: string): Promise<any> {
       'Content-Type': 'application/json;charset=UTF-8',
     }
   });
+  console.log(response)
   const result = await response.json();
+  console.log(result)
   return result;
 }
 
@@ -89,8 +91,7 @@ export async function requestCollection(collection_id: string): Promise<{success
     },properties: {
       license: response.license,
       keywords: response.keywords,
-      platform: response.summaries.platform,
-      flight_number: response.summaries.flight_number,
+      ...response.summaries
     },
   };
 
@@ -151,7 +152,7 @@ export async function requestFacets(collection?:string): Promise<{success: boole
   return result;
 }
 
-export async function requestCollectionList(): Promise<{success: boolean, collectionList: Collection[]}> {
+export async function requestCollectionList(): Promise<{success: boolean, collectionList: Collection[], context: Context}> {
   
   const requestURL = `${REACT_APP_STAC_API}collections`;
   const response = await requestGET(requestURL);
@@ -178,7 +179,8 @@ export async function requestCollectionList(): Promise<{success: boolean, collec
   
   const result = {
     success: true,
-    collectionList: collectionList
+    collectionList: collectionList,
+    context: response['context'],
   };
   return result;
 }

@@ -21,7 +21,9 @@ class CollectionList extends React.Component<Props, {}> {
           onClick={() => {this.props.onClick(collection);}}        
         >
           <h5>{collection.title}</h5>
-          <p>Keywords: {collection.properties.keywords.join(', ')}</p>
+          { collection.properties.keywords &&
+            <p>Keywords: {collection.properties.keywords.join(', ')}</p>
+          }
         </ListGroup.Item>
       );
       return listCollection;

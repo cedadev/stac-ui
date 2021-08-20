@@ -70,9 +70,8 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
   }
 
   private buildFacetBar(): React.ReactElement {
-    let buffer = []
-    buffer.push(
-        <>
+    let buffer = [
+        <div key='1'>
           <h3>Facets</h3>
             <h5>Date</h5>
             <Container>
@@ -81,7 +80,7 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
                   <FormLabel>Start Date: </FormLabel>
                 </Col>
                 <Col>
-                  <FormControl type="date" name="startTime" max="3000-12-31" 
+                  <FormControl type="date" name="startTime" max="3000-12-31"
                     min="1000-01-01" value={this.props.datetimeFacet.startTime} onChange={this.handleFacetChange} />
                 </Col>
               </Row>
@@ -90,7 +89,7 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
                   <FormLabel>End Date: </FormLabel>
                 </Col>
                 <Col>
-                  <FormControl type="date" name="endTime" max="3000-12-31" 
+                  <FormControl type="date" name="endTime" max="3000-12-31"
                     min="1000-01-01" value={this.props.datetimeFacet.endTime} onChange={this.handleFacetChange} />
                 </Col>
               </Row>
@@ -108,13 +107,12 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
                 <Col/>
               </Row>
               <Row>
-                <Col xs={5} style={{paddingRight:'20px'}}>
+                <Col xs={{span:5, offset:1}} style={{paddingRight:'0px', paddingLeft:'30px'}}>
                   <FormControl type='number' step='.001'
                     min='-180' max='0' placeholder='West' name="westBbox" 
                     value={this.props.bboxFacet.westBbox} onChange={this.handleFacetChange}/>
                 </Col>
-                <Col/>
-                <Col xs={5} style={{paddingLeft:'20px'}}>
+                <Col xs={5} style={{paddingRight:'30px', paddingLeft:'0px'}}>
                   <FormControl type='number' step='.001'
                     min='0' max='180' placeholder='East' name="eastBbox"
                     value={this.props.bboxFacet.eastBbox} onChange={this.handleFacetChange}/>
@@ -130,8 +128,8 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
                 <Col/>
               </Row>
             </Container>
-        </>
-      );
+        </div>
+    ];
 
       for (const key in this.props.availableFacets) {
         const f = this.props.availableFacets[key];
@@ -145,16 +143,16 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
         }
         
         buffer.push(
-        <>
-          <br/>
-          <Container>
-            <h5>{f.title}</h5>
-            <Select aria-label={`${f.id} select`} isMulti isClearable name={f.id} 
-              options={options} onChange={(e: any) => {this.handleSelectFacetChange(f.id, e)}}/>
-          </Container>
-        </>
-      ) 
-    }
+          <div key={f.id}>
+            <br/>
+            <Container>
+              <h5>{f.title}</h5>
+              <Select aria-label={`${f.id} select`} isMulti isClearable name={f.id}
+                options={options} onChange={(e: any) => {this.handleSelectFacetChange(f.id, e)}}/>
+            </Container>
+          </div>
+        ) 
+      }
 
     return <FormGroup>{buffer}</FormGroup>;
   }

@@ -25,17 +25,28 @@ export type Item = {
 };
 
 export type Asset = {
-    id: string;
-    title: string;
-    href: string;
-    type: string;
-    roles: string[];
+  id: string;
+  title: string;
+  href: string;
+  type: string;
+  roles: string[];
 };
 
 export type Facet = {
-    id: string;
-    title: string;
-    type: string;
-    options?: [];
-    value?: any;
+  id: string;
+  title: string;
+  type: string;
+  options?: [];
+  value?: any;
+};
+
+export type Context = {
+  returned: number;
+  matched?: number;
+};
+
+export type PaginationType = {
+  current: string;
+  next?: string;
+  previous?: string;
 };

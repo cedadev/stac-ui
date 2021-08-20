@@ -14,9 +14,11 @@ import Temporal from "../Components/Temporal";
 import Spacial from "../Components/Spacial";
 import FacetsBar from "../Components/FacetsBar";
 import SearchBar from "../Components/SearchBar";
+import SearchButton from "../Components/SearchButton";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 
 interface CollectionProps {
@@ -72,8 +74,13 @@ class CollectionPage extends Component<(CollectionProps & CollectionStoreProps &
                   <Col style={{textAlign: 'center'}} xs={12} sm={4}>
                     <FacetsBar/>
                   </Col>
-                  <Col>
-                    <SearchBar/>
+                  <Col xs={12} sm={8}>
+                    <InputGroup className="mb-3">
+                      <SearchBar/>
+                      <InputGroup.Append>
+                        <SearchButton />
+                      </InputGroup.Append>
+                    </InputGroup>
                     <h5>Items</h5>
                     <ItemList/>
                   </Col>

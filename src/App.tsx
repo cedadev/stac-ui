@@ -11,7 +11,7 @@ import thunk from 'redux-thunk';
 import SearchPage from './Pages/SearchPage';
 import ItemPage from './Pages/ItemPage';
 import CollectionPage from './Pages/CollectionPage';
-import CollectionsPage from './Pages/CollectionListPage';
+import CollectionListPage from './Pages/CollectionListPage';
 
 
 
@@ -69,7 +69,7 @@ class App extends Component<{}, { hasError: boolean }> {
             <Switch>
                 <Route exact path="/" component={SearchPage} />
                 <Route exact path="/search" component={SearchPage} />
-                <Route exact path="/collections" component={CollectionsPage} />
+                <Route exact path="/collections" component={CollectionListPage} />
                 <Route exact path="/collections/:collection_id"
                   render={({ match,
                     }: RouteComponentProps<{collection_id: string,}>) => (

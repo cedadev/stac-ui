@@ -9,9 +9,8 @@ import {
     setQueryType,
     unsetCollectionType,
     setCollectionType,
-    setPageType,
-    setMaxPageType,
-    setPageUrlType,
+    setContextType,
+    setLimitType,
     setItemListPayload,
     setCollectionListPayload,
     selectItemPayload,
@@ -20,11 +19,11 @@ import {
     setSelectedFacetPayload,
     setQueryPayload,
     setCollectionPayload,
-    setPagePayload,
-    setPageUrlPayload,
+    setContextPayload,
+    setLimitPayload,
   } from './actions.types';
   import { ActionType } from '../app.types';
-  import { Facet, Item, Collection } from '../../types';
+  import { Facet, Item, Collection, Context } from '../../types';
   
   
   export const setItemList = (
@@ -131,29 +130,20 @@ import {
     },
   });
 
-  export const setPage = (
-    page: number
-  ): ActionType<setPagePayload> => ({
-    type: setPageType,
+  export const setContext = (
+    context: Context
+  ): ActionType<setContextPayload> => ({
+    type: setContextType,
     payload: {
-      page,
+      context,
     },
   });
 
-  export const setMaxPage = (
-    page: number
-  ): ActionType<setPagePayload> => ({
-    type: setMaxPageType,
+  export const setLimit = (
+    limit: number
+  ): ActionType<setLimitPayload> => ({
+    type: setLimitType,
     payload: {
-      page,
-    },
-  });
-
-  export const setPageUrl = (
-    url: string
-  ): ActionType<setPageUrlPayload> => ({
-    type: setPageUrlType,
-    payload: {
-      url,
+      limit,
     },
   });

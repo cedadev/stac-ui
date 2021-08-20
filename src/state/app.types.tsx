@@ -1,4 +1,4 @@
-import { Item, Facet, Collection } from '../types';
+import { Item, Facet, Collection, Context } from '../types';
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
 
@@ -13,9 +13,8 @@ export interface MainState {
   selectedCollection?: Collection;
   loading: boolean;
   query: string;
-  page?: number;
-  maxPage?: number;
-  pageUrl?: string;
+  context?: Context;
+  limit?: number;
 }
 
 export interface StateType {
