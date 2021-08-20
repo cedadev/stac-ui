@@ -1,6 +1,9 @@
 import React from 'react';
 import { Item, Collection, Context } from '../types'
 import ListGroup from 'react-bootstrap/ListGroup';
+import Badge from 'react-bootstrap/Badge';
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
 import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
@@ -19,18 +22,19 @@ interface ItemListDispatchProps {
   push: (path: string) => Action;
 }
 
+
 class ItemList extends React.Component<ItemListStoreProps & ItemListDispatchProps, {}> {
 
   public handleItemClick = async (item: Item): Promise<void> => {
     this.props.push(`/collections/${item.collection.id}/items/${item.id}`);
   };
 
-  private buildItemList(): React.ReactElement[] {
-    
+private buildItemList(): React.ReactElement[] {
+
     const itemList = this.props.itemList.map(item => {
       const badges = [];
       for (const [key, value] of Object.entries(item.properties)) {
-        badges.push(<span key={key} className="badge badge-light" style={{margin:'1px'}}>{`${key}:${value}`}</span>)
+        badges.push(<span key={key} className="badge badge-secondary" style={{margin:'1px', fontSize:'90%'}}>{`${key}:${value}`}</span>)
       };
 
       let listItem = (
@@ -39,7 +43,7 @@ class ItemList extends React.Component<ItemListStoreProps & ItemListDispatchProp
           id="item-list-item"
           key={item.id.toString()}
           onClick={() => {this.handleItemClick(item);}}
-          style={{textAlign: 'left', wordWrap: 'break-word'}}   
+          style={{textAlign: 'left'}}
         >
           {!this.props.collection &&
             <p>Collection: <a href={`/collections/${item.collection.id}`}>{item.collection.title}</a></p>
@@ -56,7 +60,8 @@ class ItemList extends React.Component<ItemListStoreProps & ItemListDispatchProp
   public render(): React.ReactElement {
     return <>
       <div style={{borderBottom: '1px solid grey', textAlign: 'right'}}>{this.props.context ? `${this.props.context.returned} Items`: ''}</div>
-      <ListGroup>{this.buildItemList()}</ListGroup><Pagination/>
+      <ListGroup>{this.buildItemList()}</ListGroup>
+      <Pagination/>
     </>;
   }
 }
