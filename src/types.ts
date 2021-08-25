@@ -11,8 +11,6 @@ export type Collection = {
   properties: {
     license: string;
     keywords: string[];
-    platform: string[];
-    flight_number: string[];
   };
 };
 
