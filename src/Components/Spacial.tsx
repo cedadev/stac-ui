@@ -1,4 +1,5 @@
 import React from 'react';
+import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import MapExtent from "../Components/MapExtent";
 
@@ -21,17 +22,17 @@ class Spacial extends React.Component<Props, {}> {
                 <tbody>
                   <tr>
                   <td></td>
-                  <td style={{textAlign: 'center'}}><span className='badge badge-secondary'>{`${this.props.bbox[1].toFixed(4)}°`}</span></td>
+                  <td style={{textAlign: 'center'}}><Badge className='badge-secondary'>{`${this.props.bbox[1].toFixed(4)}°`}</Badge></td>
                   <td></td>
                   </tr>
                   <tr>
-                    <td style={{textAlign: 'center'}}><span className='badge badge-secondary'>{`${this.props.bbox[0].toFixed(4)}°`}</span></td>
+                    <td style={{textAlign: 'center'}}><Badge className='badge-secondary'>{`${this.props.bbox[0].toFixed(4)}°`}</Badge></td>
                     <td></td>
-                    <td style={{textAlign: 'center'}}><span className='badge badge-secondary'>{`${this.props.bbox[2].toFixed(4)}°`}</span></td>
+                    <td style={{textAlign: 'center'}}><Badge className='badge-secondary'>{`${this.props.bbox[2].toFixed(4)}°`}</Badge></td>
                   </tr>
                   <tr>
                     <td></td>
-                    <td style={{textAlign: 'center'}}><span className='badge badge-secondary'>{`${this.props.bbox[3].toFixed(4)}°`}</span></td>
+                    <td style={{textAlign: 'center'}}><Badge className='badge-secondary'>{`${this.props.bbox[3].toFixed(4)}°`}</Badge></td>
                     <td></td>
                   </tr>
                 </tbody>

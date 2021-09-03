@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Collection } from '../types';
+import { Collection, Error } from '../types';
 import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { setCollection, unsetCollection } from '../state/actions/actions';
+import { setCollection, unsetCollection, setError } from '../state/actions/actions';
 import { requestCollection } from '../requests';
 import NavBar from "../Components/NavBar";
 import BreadCrumb from "../Components/BreadCrumb";
@@ -19,6 +19,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Spinner from 'react-bootstrap/Spinner';
 
 
 interface CollectionProps {
@@ -26,21 +27,33 @@ interface CollectionProps {
 }
 interface CollectionStoreProps {
   collection?: Collection;
+  error: Error;
 }
 
 interface CollectionDispatchProps {
   setCollection: (selectedCollection: Collection) => Action;
   unsetCollection: () => Action;
+  setError: (error: Error) => Action;
 }
 
+type CollectionCombinedProps = CollectionProps & CollectionStoreProps & CollectionDispatchProps;
 
-class CollectionPage extends Component<(CollectionProps & CollectionStoreProps & CollectionDispatchProps), {}>  {
+class CollectionPage extends Component<(CollectionCombinedProps), {loading:boolean}>  {
+
+  constructor(props: any) {
+    super(props);
+    this.state = { loading:false };
+  }
 
   public async componentDidMount(): Promise<void> {
+    this.setState({loading: true});
     const collectionResult = await requestCollection(this.props.collection_id);
-    if (collectionResult.success && collectionResult.collection) {
+    if (collectionResult.success) {
       await this.setCollection(collectionResult.collection);
-    };
+    } else {
+      this.props.setError({hasError:true, type:'setCollection'});
+    }
+    this.setState({loading: false});
   };
 
   public async componentWillUnmount(): Promise<void> {
@@ -56,7 +69,17 @@ class CollectionPage extends Component<(CollectionProps & CollectionStoreProps &
   };
 
   public render(): React.ReactElement {
-    if (this.props.collection) {
+    if (this.props.error.hasError && this.props.error.type === 'setCollection') {
+      return (
+        <div className="alert alert-danger" role="alert">
+          Error: There was an problem getting the collection
+        </div>
+      )
+    } if (this.state.loading) {
+      return (
+        <Spinner animation="border" role="status" variant="primary" />
+      )
+    } else if (this.props.collection) {
       return (
         <>
           <NavBar/>
@@ -95,13 +118,13 @@ class CollectionPage extends Component<(CollectionProps & CollectionStoreProps &
           </Container>
           <footer></footer>
         </>
-      );
+      )
     } else {
       return (
         <>
           <h3>No Collection</h3>
         </>
-      );
+      )
     }
   }
 }
@@ -109,6 +132,7 @@ class CollectionPage extends Component<(CollectionProps & CollectionStoreProps &
 const mapStateToProps = (state: StateType): CollectionStoreProps => {
   return {
     collection: state.main.selectedCollection,
+    error: state.main.error,
   }
 }
 
@@ -119,6 +143,8 @@ const mapDispatchToProps = (
     dispatch(setCollection(collection)),
   unsetCollection: () =>
     dispatch(unsetCollection()),
+  setError: (error: Error) =>
+    dispatch(setError(error)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CollectionPage);

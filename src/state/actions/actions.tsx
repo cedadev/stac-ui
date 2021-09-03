@@ -3,27 +3,31 @@ import {
     setCollectionListType,
     selectItemType,
     deselectItemType,
-    setLoadingType,
-    setAvailableFacetsType,
-    setSelectedFacetType,
+    setItemListLoadingType,
+    setSearchFacetsType,
+    setSearchFacetValueType,
+    setDatetimeFacetType,
+    setBboxFacetType,
     setQueryType,
     unsetCollectionType,
     setCollectionType,
     setContextType,
     setLimitType,
+    setErrorType,
     setItemListPayload,
     setCollectionListPayload,
     selectItemPayload,
-    setLoadingPayload,
-    setAvailableFacetsPayload,
-    setSelectedFacetPayload,
+    setItemListLoadingPayload,
+    setSearchFacetsPayload,
+    setFacetPayload,
     setQueryPayload,
     setCollectionPayload,
     setContextPayload,
     setLimitPayload,
+    setErrorPayload,
   } from './actions.types';
   import { ActionType } from '../app.types';
-  import { Facet, Item, Collection, Context } from '../../types';
+  import { Facet, Item, Collection, Context, Error } from '../../types';
   
   
   export const setItemList = (
@@ -70,54 +74,54 @@ import {
     return { type: unsetCollectionType }
   }
 
-  export const setAvailableFacets = (
-    availableFacets: Facet[]
-  ): ActionType<setAvailableFacetsPayload> => ({
-    type: setAvailableFacetsType,
+  export const setSearchFacets = (
+    searchFacets: Facet[]
+  ): ActionType<setSearchFacetsPayload> => ({
+    type: setSearchFacetsType,
     payload: {
-      availableFacets,
+      searchFacets,
     },
   });
 
-  export const setSelectedFacet = (
-    selectedFacet: string,
-    facetValue: any,
-  ): ActionType<setSelectedFacetPayload> => ({
-    type: setSelectedFacetType,
+  export const setSearchFacetValue = (
+    id: string,
+    value: any,
+  ): ActionType<setFacetPayload> => ({
+    type: setSearchFacetValueType,
     payload: {
-      selectedFacet,
-      facetValue
+      id,
+      value
     },
   });
 
   export const setBboxFacet = (
-    selectedFacet: string,
-    facetValue: any,
-  ): ActionType<setSelectedFacetPayload> => ({
-    type: setSelectedFacetType,
+    id: string,
+    value: any,
+  ): ActionType<setFacetPayload> => ({
+    type: setBboxFacetType,
     payload: {
-      selectedFacet,
-      facetValue
+      id,
+      value
     },
   });
 
   export const setDatetimeFacet = (
-    selectedFacet: string,
-    facetValue: any,
-  ): ActionType<setSelectedFacetPayload> => ({
-    type: setSelectedFacetType,
+    id: string,
+    value: any,
+  ): ActionType<setFacetPayload> => ({
+    type: setDatetimeFacetType,
     payload: {
-      selectedFacet,
-      facetValue
+      id,
+      value
     },
   });
 
-  export const setLoading = (
-    loading: boolean
-  ): ActionType<setLoadingPayload> => ({
-    type: setLoadingType,
+  export const setItemListLoading = (
+    isLoading: boolean,
+  ): ActionType<setItemListLoadingPayload> => ({
+    type: setItemListLoadingType,
     payload: {
-      loading,
+      isLoading,
     },
   });
 
@@ -145,5 +149,14 @@ import {
     type: setLimitType,
     payload: {
       limit,
+    },
+  });
+
+  export const setError = (
+    error: Error
+  ): ActionType<setErrorPayload> => ({
+    type: setErrorType,
+    payload: {
+      error,
     },
   });

@@ -31,7 +31,7 @@ interface ItemDispatchProps {
   push: (path: string) => Action;
 }
 
-type ItemCombinedProps =ItemProps & ItemStoreProps & ItemDispatchProps;
+type ItemCombinedProps = ItemProps & ItemStoreProps & ItemDispatchProps;
 
 class ItemPage extends Component<ItemCombinedProps, {}>  {
 
@@ -40,7 +40,9 @@ class ItemPage extends Component<ItemCombinedProps, {}>  {
 
     if (result.success && result.item) {
       await this.selectItem(result.item);
-    };
+    } else {
+
+    }
     if (result.success && result.item) {
     };
   }

@@ -42,11 +42,30 @@ export type Facet = {
 
 export type Context = {
   returned: number;
-  matched?: number;
+  limit?: number;
+  result_count?: number;
 };
 
 export type PaginationType = {
   current: string;
   next?: string;
   previous?: string;
+};
+
+export type BboxFacet = {
+  northBbox: string;
+  eastBbox: string;
+  southBbox: string;
+  westBbox: string;
+};
+
+export type DatetimeFacet = {
+  startTime?: string;
+  endTime?: string;
+};
+
+export type Error = {
+  hasError: boolean;
+  type?: string;
+  string?: string;
 };

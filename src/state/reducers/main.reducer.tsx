@@ -1,23 +1,24 @@
 import { MainState } from "../app.types";
 import createReducer from './createReducer';
 import {
-  setLoadingType,
+  setItemListLoadingType,
   setItemListType,
   setCollectionListType,
   selectItemType,
   deselectItemType,
   setCollectionType,
   unsetCollectionType,
-  setAvailableFacetsType,
-  setSelectedFacetType,
+  setSearchFacetsType,
+  setSearchFacetValueType,
   setBboxFacetType,
   setDatetimeFacetType,
   setQueryType,
   setContextType,
   setLimitType,
-  setLoadingPayload,
-  setAvailableFacetsPayload,
-  setSelectedFacetPayload,
+  setErrorType,
+  setItemListLoadingPayload,
+  setSearchFacetsPayload,
+  setFacetPayload,
   setItemListPayload,
   setCollectionListPayload,
   selectItemPayload,
@@ -25,19 +26,27 @@ import {
   setQueryPayload,
   setContextPayload,
   setLimitPayload,
+  setErrorPayload,
 } from "../actions/actions.types";
 
 export const initialState: MainState = {
   itemList: [],
   collectionList: [],
-  availableFacets: [],
-  selectedFacets: {},
-  bboxFacet: {},
+  searchFacets: [],
+  bboxFacet: {
+    northBbox: '',
+    eastBbox: '',
+    southBbox: '',
+    westBbox: '',
+  },
   datetimeFacet: {},
   context: undefined,
   query: '',
   selectedItem: undefined,
-  loading: true,
+  itemListLoading: false,
+  error: {
+    hasError: false
+  },
 };
 
 export function setItemList(
@@ -98,83 +107,82 @@ export function unsetCollection(
   };
 }
 
-export function setAvailableFacets(
+export function setSearchFacets(
   state: MainState,
-  payload: setAvailableFacetsPayload
+  payload: setSearchFacetsPayload
 ): MainState {
   return {
     ...state,
-    availableFacets: payload.availableFacets,
+    searchFacets: payload.searchFacets,
   };
 }
 
-export function setSelectedFacet(
+export function setSearchFacetValue(
   state: MainState,
-  payload: setSelectedFacetPayload
+  payload: setFacetPayload
 ): MainState {
-  if (payload.facetValue) {
+  var searchFacets = state.searchFacets.filter(f => f.id !== payload.id);
+  var selectedFacet = state.searchFacets.find(f => f.id === payload.id);
+  if (selectedFacet !== undefined) {
+    if (payload.value) {
+      selectedFacet = {
+        ...selectedFacet,
+        value: payload.value
+      };
+    } else {
+      delete selectedFacet.value;
+    }
+    searchFacets.push(selectedFacet);
     return {
       ...state,
-      selectedFacets: {
-        ...state.selectedFacets,
-        [payload.selectedFacet]: payload.facetValue,
-      }
-    };
+      searchFacets: searchFacets,
+    }
   } else {
-    var newState: any = state;
-    delete newState.selectedFacets[payload.selectedFacet];
-    return newState;
-  };
-  
+    return state
+  }  
 }
 
 export function setBboxFacet(
   state: MainState,
-  payload: setSelectedFacetPayload
+  payload: setFacetPayload
 ): MainState {
-  if (payload.facetValue) {
-    return {
-      ...state,
-      bboxFacet: {
-        ...state.bboxFacet,
-        [payload.selectedFacet]: payload.facetValue,
-      }
-    };
-  } else {
-    var newState: any = state;
-    delete newState.bboxFacet[payload.selectedFacet];
-    return newState;
+  return {
+    ...state,
+    bboxFacet: {
+      ...state.bboxFacet,
+      [payload.id]: payload.value,
+    }
   };
 }
 
 export function setDatetimeFacet(
   state: MainState,
-  payload: setSelectedFacetPayload
+  payload: setFacetPayload
 ): MainState {
-  if (payload.facetValue) {
+  if (payload.value) {
     return {
       ...state,
       datetimeFacet: {
         ...state.datetimeFacet,
-        [payload.selectedFacet]: payload.facetValue,
+        [payload.id]: payload.value,
       }
     };
   } else {
     var newState: any = state;
-    delete newState.datetimeFacet[payload.selectedFacet];
+    delete newState.datetimeFacet[payload.id];
     return newState;
   };
   
 }
 
-export function setLoading(
+export function setItemListLoading(
   state: MainState,
-  payload: setLoadingPayload,
+  payload: setItemListLoadingPayload,
 ): MainState {
   return {
     ...state,
-    loading: payload.loading,
-  };
+    itemListLoading: payload.isLoading,
+  }
 }
 
 export function setQuery(
@@ -207,6 +215,15 @@ export function setLimit(
   };
 }
 
+export function setError(
+  state: MainState,
+  payload: setErrorPayload,
+): MainState {
+  return {
+    ...state,
+    error: payload.error,
+  };
+}
 
 const MainReducer = createReducer(initialState, {
   [setItemListType]: setItemList,
@@ -215,14 +232,15 @@ const MainReducer = createReducer(initialState, {
   [deselectItemType]: deselectItem,
   [setCollectionType]: setCollection,
   [unsetCollectionType]: unsetCollection,
-  [setAvailableFacetsType]: setAvailableFacets,
-  [setSelectedFacetType]: setSelectedFacet,
+  [setSearchFacetsType]: setSearchFacets,
+  [setSearchFacetValueType]: setSearchFacetValue,
   [setBboxFacetType]: setBboxFacet,
   [setDatetimeFacetType]: setDatetimeFacet,
-  [setLoadingType]: setLoading,
+  [setItemListLoadingType]: setItemListLoading,
   [setQueryType]: setQuery,
   [setContextType]: setContext,
   [setLimitType]: setLimit,
+  [setErrorType]: setError,
 })
 
 export default MainReducer;

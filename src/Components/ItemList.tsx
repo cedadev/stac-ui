@@ -1,21 +1,22 @@
 import React from 'react';
-import { Item, Collection, Context } from '../types'
+import { Item, Collection, Context, Error } from '../types'
 import ListGroup from 'react-bootstrap/ListGroup';
 import Badge from 'react-bootstrap/Badge';
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
 import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { push } from 'connected-react-router';
-import Pagination from "../Components/Pagination";
+import Pagination from '../Components/Pagination';
+import Spinner from 'react-bootstrap/Spinner';
 
 
 interface ItemListStoreProps {
   collection?: Collection;
   itemList: Item[];
   context?: Context;
+  error: Error;
+  loading: boolean;
 }
 
 interface ItemListDispatchProps {
@@ -30,11 +31,10 @@ class ItemList extends React.Component<ItemListStoreProps & ItemListDispatchProp
   };
 
 private buildItemList(): React.ReactElement[] {
-
     const itemList = this.props.itemList.map(item => {
       const badges = [];
       for (const [key, value] of Object.entries(item.properties)) {
-        badges.push(<span key={key} className="badge badge-secondary" style={{margin:'1px', fontSize:'90%'}}>{`${key}:${value}`}</span>)
+        badges.push(<Badge key={key} className="badge-secondary" style={{margin:'1px', fontSize:'90%'}}>{`${key}:${value}`}</Badge>)
       };
 
       let listItem = (
@@ -58,11 +58,26 @@ private buildItemList(): React.ReactElement[] {
   }
 
   public render(): React.ReactElement {
-    return <>
-      <div style={{borderBottom: '1px solid grey', textAlign: 'right'}}>{this.props.context ? `${this.props.context.returned} Items`: ''}</div>
-      <ListGroup>{this.buildItemList()}</ListGroup>
-      <Pagination/>
-    </>;
+    if (this.props.error.hasError && this.props.error.type === 'setItemList') {
+      return (
+        <div className="alert alert-danger" role="alert">
+          Error: There was an problem getting the search results
+        </div>
+      )
+    } else if(!this.props.loading) {
+      return (
+        <>
+          <div style={{borderBottom: '1px solid grey', textAlign: 'right'}}>{this.props.context?.result_count ? `${this.props.context.result_count} Items`: ''}</div>
+          <ListGroup>{this.buildItemList()}</ListGroup>
+          <Pagination/>
+        </>
+      )
+    } else {
+      return (
+        <Spinner animation="border" role="status" variant="primary" />
+      )
+    }
+    
   }
 }
 
@@ -71,6 +86,8 @@ const mapStateToProps = (state: StateType): ItemListStoreProps => {
     collection: state.main.selectedCollection,
     itemList: state.main.itemList,
     context: state.main.context,
+    error: state.main.error,
+    loading: state.main.itemListLoading,
   }
 }
 

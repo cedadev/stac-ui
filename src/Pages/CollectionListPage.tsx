@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
 import { Collection } from '../types';
-import queryString from 'query-string';
 import { StateType } from '../state/app.types';
-import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { push } from 'connected-react-router';
-import { setCollectionList } from '../state/actions/actions';
-import { requestCollectionList } from '../requests';
 import NavBar from "../Components/NavBar";
 import BreadCrumb from "../Components/BreadCrumb";
 import CollectionList from "../Components/CollectionList";
@@ -20,29 +14,9 @@ interface CollectionsStoreProps {
   collectionList: Collection[];
 }
 
-interface CollectionsDispatchProps {
-  setCollectionList: (setCollectionList: Collection[]) => Action;
-  push: (path: string) => Action;
-}
+type CollectionsCombinedProps = CollectionsStoreProps;
 
-type CollectionsCombinedProps = CollectionsStoreProps & CollectionsDispatchProps;
-
-class CollectionListPage extends Component<(CollectionsCombinedProps), {}>  {
-
-  public async componentDidMount(): Promise<void> {
-    const result = await requestCollectionList();
-    if (result.success && result.collectionList) {
-      await this.setCollectionList(result.collectionList);
-    };
-  };
-
-  public setCollectionList = async (collectionList: Collection[]): Promise<void> => {
-    this.props.setCollectionList(collectionList);
-  };
-  
-  public handleItemClick = async (collection: Collection): Promise<void> => {
-    this.props.push(`/collections/${collection.id}`);
-  };
+class CollectionListPage extends Component<(CollectionsCombinedProps), {loading:boolean}>  {
 
   public render(): React.ReactElement {
       return (
@@ -52,9 +26,8 @@ class CollectionListPage extends Component<(CollectionsCombinedProps), {}>  {
             <BreadCrumb/>
             <Row>
               <Col>
-                <div style={{borderBottom: '1px solid grey', textAlign: 'right'}}>{this.props.collectionList.length} Results</div>
                 {this.props.collectionList !== [] ? (
-                    <CollectionList collections={this.props.collectionList} onClick={this.handleItemClick}/>
+                    <CollectionList />
                   ) : (
                     <p>No match found</p>
                   )}
@@ -72,13 +45,4 @@ const mapStateToProps = (state: StateType): CollectionsStoreProps => {
   }
 }
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): CollectionsDispatchProps => ({
-  setCollectionList: (collectionList: Collection[]) =>
-    dispatch(setCollectionList(collectionList)),
-  push: (path: string) =>
-    dispatch(push(path)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CollectionListPage);
+export default connect(mapStateToProps, null)(CollectionListPage);
