@@ -243,12 +243,9 @@ export async function requestCollectionList(): Promise<{success: boolean, collec
         properties: {
           license: c.license,
           keywords: c.keywords,
-          platform: c.summaries.platform,
-          flight_number: c.summaries.flight_number,
         },
       };
     }));
-    
     
     const result = {
       success: true,
