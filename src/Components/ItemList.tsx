@@ -1,5 +1,5 @@
 import React from 'react';
-import { Item, Collection, Context, Error } from '../types'
+import { Item, Collection, Context, Error, Facet } from '../types'
 import ListGroup from 'react-bootstrap/ListGroup';
 import Badge from 'react-bootstrap/Badge';
 import { StateType } from '../state/app.types';
@@ -9,28 +9,34 @@ import { ThunkDispatch } from 'redux-thunk';
 import { push } from 'connected-react-router';
 import Pagination from '../Components/Pagination';
 import Spinner from 'react-bootstrap/Spinner';
+import { requestSearchItems, requestSearchItemsPOST } from '../requests';
+import { setUpdateItemList, setItemList, setContext } from '../state/actions/actions';
+import queryString from 'query-string';
+import { ThemeConsumer } from 'react-bootstrap/esm/ThemeProvider';
 
 
 interface ItemListStoreProps {
   collection?: Collection;
   itemList: Item[];
   context?: Context;
-  error: Error;
   loading: boolean;
+  hasError: boolean;
 }
 
 interface ItemListDispatchProps {
   push: (path: string) => Action;
 }
 
+type ItemListCombinedProps = ItemListStoreProps & ItemListDispatchProps
 
-class ItemList extends React.Component<ItemListStoreProps & ItemListDispatchProps, {}> {
+
+class ItemList extends React.Component<ItemListCombinedProps, {}> {
 
   public handleItemClick = async (item: Item): Promise<void> => {
     this.props.push(`/collections/${item.collection.id}/items/${item.id}`);
   };
 
-private buildItemList(): React.ReactElement[] {
+  private buildItemList(): React.ReactElement[] {
     const itemList = this.props.itemList.map(item => {
       const badges = [];
       for (const [key, value] of Object.entries(item.properties)) {
@@ -53,31 +59,35 @@ private buildItemList(): React.ReactElement[] {
       );
       return listItem;
     });
-
     return itemList;
   }
 
   public render(): React.ReactElement {
-    if (this.props.error.hasError && this.props.error.type === 'setItemList') {
+    if (this.props.hasError) {
       return (
         <div className="alert alert-danger" role="alert">
           Error: There was an problem getting the search results
         </div>
       )
-    } else if(!this.props.loading) {
-      return (
-        <>
-          <div style={{borderBottom: '1px solid grey', textAlign: 'right'}}>{this.props.context?.result_count ? `${this.props.context.result_count} Items`: ''}</div>
-          <ListGroup>{this.buildItemList()}</ListGroup>
-          <Pagination/>
-        </>
-      )
-    } else {
+    } else if(this.props.loading) {
       return (
         <Spinner animation="border" role="status" variant="primary" />
       )
+    } else if (this.props.itemList.length === 0) {
+      return (
+        <div className="alert alert-info" role="alert">
+          No results found
+        </div>
+      )
+    } else {
+      return (
+          <>
+            <div style={{borderBottom: '1px solid grey', textAlign: 'right'}}>{this.props.context?.result_count ? `${this.props.context.result_count} Items`: ''}</div>
+            <ListGroup>{this.buildItemList()}</ListGroup>
+            <Pagination/>
+          </>
+        )
     }
-    
   }
 }
 
@@ -86,8 +96,8 @@ const mapStateToProps = (state: StateType): ItemListStoreProps => {
     collection: state.main.selectedCollection,
     itemList: state.main.itemList,
     context: state.main.context,
-    error: state.main.error,
     loading: state.main.itemListLoading,
+    hasError: state.main.itemListError,
   }
 }
 

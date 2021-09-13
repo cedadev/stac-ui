@@ -4,7 +4,7 @@ import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { setCollectionList, setContext, setError } from '../state/actions/actions';
+import { setCollectionList, setContext } from '../state/actions/actions';
 import { requestCollectionList } from '../requests';
 import { push } from 'connected-react-router';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -15,23 +15,21 @@ import Spinner from 'react-bootstrap/Spinner';
 interface CollectionListStoreProps {
   collectionList: Collection[];
   context?: Context;
-  error: Error;
 }
 
 interface CollectionListDispatchProps {
   setCollectionList: (setCollectionList: Collection[]) => Action;
   setContext: (context: Context) => Action;
-  setError: (error: Error) => Action;
   push: (path: string) => Action;
 }
 
 type CollectionListCombinedProps = CollectionListStoreProps & CollectionListDispatchProps;
 
-class CollectionList extends React.Component<CollectionListCombinedProps, {loading: boolean}> {
+class CollectionList extends React.Component<CollectionListCombinedProps, {loading: boolean, hasError: boolean}> {
 
-  constructor(props: any) {
+  constructor(props: CollectionListCombinedProps) {
     super(props);
-    this.state = { loading:false };
+    this.state = { loading: false, hasError: false };
   }
 
   public async componentDidMount(): Promise<void> {
@@ -39,15 +37,15 @@ class CollectionList extends React.Component<CollectionListCombinedProps, {loadi
   };
   
   public setCollectionList = async (): Promise<void> => {
-    this.setState({loading:true});
+    this.setState({...this.state, loading: true});
     const result = await requestCollectionList();
     if (result.success) {
       this.props.setCollectionList(result.collectionList);
       this.props.setContext(result.context);
     } else {
-      this.props.setError({hasError:true, type:'setCollectionList'});
+      this.setState({...this.state, hasError: true});
     }
-    this.setState({loading:false});
+    this.setState({...this.state, loading: false});
   };
 
   public handleItemClick = async (collection: Collection): Promise<void> => {
@@ -75,7 +73,7 @@ class CollectionList extends React.Component<CollectionListCombinedProps, {loadi
   }
 
   public render(): React.ReactElement {
-    if (this.props.error.hasError && this.props.error.type === 'setCollectionList') {
+    if (this.state.hasError) {
       return (
         <div className="alert alert-danger" role="alert">
           Error: There was an problem getting the collection list
@@ -102,7 +100,6 @@ const mapStateToProps = (state: StateType): CollectionListStoreProps => {
   return {
     collectionList: state.main.collectionList,
     context: state.main.context,
-    error: state.main.error,
   }
 }
 
@@ -113,8 +110,6 @@ const mapDispatchToProps = (
     dispatch(setCollectionList(collectionList)),
   setContext: (context: Context) =>
     dispatch(setContext(context)),
-  setError: (error: Error) =>
-    dispatch(setError(error)),
   push: (path: string) =>
     dispatch(push(path)),
 });

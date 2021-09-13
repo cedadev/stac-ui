@@ -1,7 +1,6 @@
 import { MainState } from "../app.types";
 import createReducer from './createReducer';
 import {
-  setItemListLoadingType,
   setItemListType,
   setCollectionListType,
   selectItemType,
@@ -14,9 +13,9 @@ import {
   setDatetimeFacetType,
   setQueryType,
   setContextType,
-  setLimitType,
-  setErrorType,
-  setItemListLoadingPayload,
+  setItemListLoadingType,
+  setItemListErrorType,
+  setPageType,
   setSearchFacetsPayload,
   setFacetPayload,
   setItemListPayload,
@@ -25,8 +24,9 @@ import {
   setCollectionPayload,
   setQueryPayload,
   setContextPayload,
-  setLimitPayload,
-  setErrorPayload,
+  setItemListLoadingPayload,
+  setItemListErrorPayload,
+  setPagePayload,
 } from "../actions/actions.types";
 
 export const initialState: MainState = {
@@ -40,13 +40,10 @@ export const initialState: MainState = {
     westBbox: '',
   },
   datetimeFacet: {},
-  context: undefined,
   query: '',
-  selectedItem: undefined,
+  page: 1,
   itemListLoading: false,
-  error: {
-    hasError: false
-  },
+  itemListError: false,
 };
 
 export function setItemList(
@@ -171,18 +168,7 @@ export function setDatetimeFacet(
     var newState: any = state;
     delete newState.datetimeFacet[payload.id];
     return newState;
-  };
-  
-}
-
-export function setItemListLoading(
-  state: MainState,
-  payload: setItemListLoadingPayload,
-): MainState {
-  return {
-    ...state,
-    itemListLoading: payload.isLoading,
-  }
+  };  
 }
 
 export function setQuery(
@@ -205,25 +191,36 @@ export function setContext(
   };
 }
 
-export function setLimit(
+export function setPage(
   state: MainState,
-  payload: setLimitPayload,
+  payload: setPagePayload,
 ): MainState {
   return {
     ...state,
-    limit: payload.limit,
-  };
+    page: payload.page,
+    }
 }
 
-export function setError(
+export function setItemListLoading(
   state: MainState,
-  payload: setErrorPayload,
+  payload: setItemListLoadingPayload,
 ): MainState {
   return {
     ...state,
-    error: payload.error,
-  };
+    itemListLoading: payload.isLoading,
+    }
 }
+
+export function setItemListError(
+  state: MainState,
+  payload: setItemListErrorPayload,
+): MainState {
+  return {
+    ...state,
+    itemListError: payload.hasError,
+    }
+}
+
 
 const MainReducer = createReducer(initialState, {
   [setItemListType]: setItemList,
@@ -236,11 +233,12 @@ const MainReducer = createReducer(initialState, {
   [setSearchFacetValueType]: setSearchFacetValue,
   [setBboxFacetType]: setBboxFacet,
   [setDatetimeFacetType]: setDatetimeFacet,
-  [setItemListLoadingType]: setItemListLoading,
   [setQueryType]: setQuery,
   [setContextType]: setContext,
-  [setLimitType]: setLimit,
-  [setErrorType]: setError,
+  [setPageType]: setPage,
+  [setItemListLoadingType]: setItemListLoading,
+  [setItemListErrorType]: setItemListError,
+
 })
 
 export default MainReducer;

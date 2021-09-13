@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import { Item } from '../types';
-import { StateType } from '../state/app.types';
-import { connect } from 'react-redux';
 import ItemList from '../Components/ItemList';
 import NavBar from "../Components/NavBar";
 import FacetsBar from "../Components/FacetsBar";
@@ -13,16 +10,7 @@ import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 
 
-interface SearchStoreProps {
-  itemList: Item[];
-}
-
-type SearchCombinedProps = SearchStoreProps;
-
-class SearchPage extends Component< (SearchCombinedProps), {}>  {
-
-  public async componentDidMount(): Promise<void> {
-  };
+class SearchPage extends Component< {}, {}>  {
 
   public render(): React.ReactElement {
     return (
@@ -44,11 +32,7 @@ class SearchPage extends Component< (SearchCombinedProps), {}>  {
               </InputGroup>
               {window.location.search &&
               <>
-                {this.props.itemList !== [] ? (
-                  <ItemList/>
-                ) : (
-                  <p>No match found</p>
-                )}
+                <ItemList/>
               </>
               }
             </Col>
@@ -59,10 +43,4 @@ class SearchPage extends Component< (SearchCombinedProps), {}>  {
   }
 }
 
-const mapStateToProps = (state: StateType): SearchStoreProps => {
-  return {
-    itemList: state.main.itemList,
-  }
-}
-
-export default connect(mapStateToProps, null)(SearchPage);
+export default (SearchPage);

@@ -1,4 +1,4 @@
-import { Facet, Item, Collection, Context, Error } from "../../types";
+import { Facet, Item, Collection, Context } from "../../types";
 export const setItemListType = 'set_item_list';
 export const setCollectionListType = 'set_collection_list';
 export const selectItemType = 'select_item';
@@ -9,11 +9,14 @@ export const setSearchFacetsType = 'set_search_facets';
 export const setSearchFacetValueType = 'set_search_facet_value';
 export const setBboxFacetType = 'set_bbox_facet';
 export const setDatetimeFacetType = 'set_datetime_facet';
-export const setItemListLoadingType = 'set_item_list_loading';
 export const setQueryType = 'set_query';
 export const setContextType = 'set_context';
 export const setLimitType = 'set_limit';
-export const setErrorType = 'set_error';
+export const setPageType = 'set_page';
+export const setUpdateItemListType = 'set_update_item_list';
+export const updateItemListType = 'update_item_list';
+export const setItemListLoadingType = 'set_item_list_loading';
+export const setItemListErrorType = 'set_item_list_error';
 
 
 export interface setItemListPayload {
@@ -30,10 +33,6 @@ export interface selectItemPayload {
 
 export interface setCollectionPayload {
   collection: Collection;
-}
-
-export interface setItemListLoadingPayload {
-  isLoading: boolean;
 }
 
 export interface setQueryPayload {
@@ -57,6 +56,22 @@ export interface setLimitPayload {
   limit: number;
 }
 
-export interface setErrorPayload {
-  error: Error;
+export interface setPagePayload {
+  page: number;
+}
+
+export interface setUpdateItemListPayload {
+  updateItemList: boolean;
+}
+
+export interface updateItemListPayload {
+  updateItemList: boolean;
+}
+
+export interface setItemListLoadingPayload {
+  isLoading: boolean;
+}
+
+export interface setItemListErrorPayload {
+  hasError: boolean;
 }

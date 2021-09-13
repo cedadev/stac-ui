@@ -46,12 +46,6 @@ export type Context = {
   result_count?: number;
 };
 
-export type PaginationType = {
-  current: string;
-  next?: string;
-  previous?: string;
-};
-
 export type BboxFacet = {
   northBbox: string;
   eastBbox: string;

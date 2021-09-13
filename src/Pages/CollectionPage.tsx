@@ -4,7 +4,7 @@ import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { setCollection, unsetCollection, setError } from '../state/actions/actions';
+import { setCollection, unsetCollection } from '../state/actions/actions';
 import { requestCollection } from '../requests';
 import NavBar from "../Components/NavBar";
 import BreadCrumb from "../Components/BreadCrumb";
@@ -27,33 +27,31 @@ interface CollectionProps {
 }
 interface CollectionStoreProps {
   collection?: Collection;
-  error: Error;
 }
 
 interface CollectionDispatchProps {
   setCollection: (selectedCollection: Collection) => Action;
   unsetCollection: () => Action;
-  setError: (error: Error) => Action;
 }
 
 type CollectionCombinedProps = CollectionProps & CollectionStoreProps & CollectionDispatchProps;
 
-class CollectionPage extends Component<(CollectionCombinedProps), {loading:boolean}>  {
+class CollectionPage extends Component<(CollectionCombinedProps), { loading: boolean, hasError: boolean }>  {
 
-  constructor(props: any) {
+  constructor(props: CollectionCombinedProps) {
     super(props);
-    this.state = { loading:false };
+    this.state = { loading: false, hasError: false };
   }
 
   public async componentDidMount(): Promise<void> {
-    this.setState({loading: true});
+    this.setState({ ...this.state, loading: true });
     const collectionResult = await requestCollection(this.props.collection_id);
     if (collectionResult.success) {
       await this.setCollection(collectionResult.collection);
     } else {
-      this.props.setError({hasError:true, type:'setCollection'});
+      this.setState({ ...this.state, hasError: true });
     }
-    this.setState({loading: false});
+    this.setState({ ...this.state, loading: false });
   };
 
   public async componentWillUnmount(): Promise<void> {
@@ -69,7 +67,7 @@ class CollectionPage extends Component<(CollectionCombinedProps), {loading:boole
   };
 
   public render(): React.ReactElement {
-    if (this.props.error.hasError && this.props.error.type === 'setCollection') {
+    if (this.state.hasError) {
       return (
         <div className="alert alert-danger" role="alert">
           Error: There was an problem getting the collection
@@ -132,7 +130,6 @@ class CollectionPage extends Component<(CollectionCombinedProps), {loading:boole
 const mapStateToProps = (state: StateType): CollectionStoreProps => {
   return {
     collection: state.main.selectedCollection,
-    error: state.main.error,
   }
 }
 
@@ -143,8 +140,6 @@ const mapDispatchToProps = (
     dispatch(setCollection(collection)),
   unsetCollection: () =>
     dispatch(unsetCollection()),
-  setError: (error: Error) =>
-    dispatch(setError(error)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CollectionPage);

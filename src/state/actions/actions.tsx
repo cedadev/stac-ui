@@ -3,7 +3,6 @@ import {
     setCollectionListType,
     selectItemType,
     deselectItemType,
-    setItemListLoadingType,
     setSearchFacetsType,
     setSearchFacetValueType,
     setDatetimeFacetType,
@@ -13,21 +12,28 @@ import {
     setCollectionType,
     setContextType,
     setLimitType,
-    setErrorType,
+    setPageType,
+    setUpdateItemListType,
+    updateItemListType,
+    setItemListLoadingType,
+    setItemListErrorType,
     setItemListPayload,
     setCollectionListPayload,
     selectItemPayload,
-    setItemListLoadingPayload,
     setSearchFacetsPayload,
     setFacetPayload,
     setQueryPayload,
     setCollectionPayload,
     setContextPayload,
     setLimitPayload,
-    setErrorPayload,
+    setPagePayload,
+    setUpdateItemListPayload,
+    updateItemListPayload,
+    setItemListLoadingPayload,
+    setItemListErrorPayload,
   } from './actions.types';
   import { ActionType } from '../app.types';
-  import { Facet, Item, Collection, Context, Error } from '../../types';
+  import { Facet, Item, Collection, Context } from '../../types';
   
   
   export const setItemList = (
@@ -116,15 +122,6 @@ import {
     },
   });
 
-  export const setItemListLoading = (
-    isLoading: boolean,
-  ): ActionType<setItemListLoadingPayload> => ({
-    type: setItemListLoadingType,
-    payload: {
-      isLoading,
-    },
-  });
-
   export const setQuery = (
     query: string
   ): ActionType<setQueryPayload> => ({
@@ -152,11 +149,47 @@ import {
     },
   });
 
-  export const setError = (
-    error: Error
-  ): ActionType<setErrorPayload> => ({
-    type: setErrorType,
+  export const setPage = (
+    page: number
+  ): ActionType<setPagePayload> => ({
+    type: setPageType,
     payload: {
-      error,
+      page,
+    },
+  });
+
+  export const setUpdateItemList = (
+    updateItemList: boolean
+  ): ActionType<setUpdateItemListPayload> => ({
+    type: setUpdateItemListType,
+    payload: {
+      updateItemList,
+    },
+  });
+
+  export const updateItemList = (
+    updateItemList: boolean
+  ): ActionType<updateItemListPayload> => ({
+    type: updateItemListType,
+    payload: {
+      updateItemList,
+    },
+  });
+
+  export const setItemListLoading = (
+    isLoading: boolean
+  ): ActionType<setItemListLoadingPayload> => ({
+    type: setItemListLoadingType,
+    payload: {
+      isLoading,
+    },
+  });  
+  
+  export const setItemListError = (
+    hasError: boolean
+  ): ActionType<setItemListErrorPayload> => ({
+    type: setItemListErrorType,
+    payload: {
+      hasError,
     },
   });

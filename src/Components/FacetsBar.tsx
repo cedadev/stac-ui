@@ -105,93 +105,117 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
 
   private buildFacetBar(): React.ReactElement {
     let buffer = [
-        <div key='1'>
-          <h3>Facets</h3>
-            <h5>Date</h5>
-            <Container>
-              <Row>
-                <Col style={{textAlign:'right', paddingLeft:'5px', paddingRight:'5px'}}>
-                  <FormLabel>Start Date: </FormLabel>
-                </Col>
-                <Col>
-                  <FormControl type="date" name="startTime" max="3000-12-31"
-                    min="1000-01-01" value={this.props.datetimeFacet.startTime} onChange={this.handleDatetimeFacetChange} />
-                </Col>
-              </Row>
-              <Row>
-                <Col style={{textAlign:'right', paddingLeft:'5px', paddingRight:'5px'}}>
-                  <FormLabel>End Date: </FormLabel>
-                </Col>
-                <Col>
-                  <FormControl type="date" name="endTime" max="3000-12-31"
-                    min="1000-01-01" value={this.props.datetimeFacet.endTime} onChange={this.handleDatetimeFacetChange} />
-                </Col>
-              </Row>
-            </Container>
-            <br/>
-            <h5>Bbox</h5>
-            <Container style={{alignItems:'centre'}}>
-              <Row>
-                <Col/>
-                <Col xs={5}>
-                  <FormControl type='number' step='.001'
-                    min='0' max='90' placeholder='North' name="northBbox" 
-                    value={this.props.bboxFacet.northBbox} onChange={this.handleBboxFacetChange}/>
-                </Col>
-                <Col/>
-              </Row>
-              <Row>
-                <Col xs={{span:5, offset:1}} style={{paddingRight:'0px', paddingLeft:'30px'}}>
-                  <FormControl type='number' step='.001'
-                    min='-180' max='0' placeholder='West' name="westBbox" 
-                    value={this.props.bboxFacet.westBbox} onChange={this.handleBboxFacetChange}/>
-                </Col>
-                <Col xs={5} style={{paddingRight:'30px', paddingLeft:'0px'}}>
-                  <FormControl type='number' step='.001'
-                    min='0' max='180' placeholder='East' name="eastBbox"
-                    value={this.props.bboxFacet.eastBbox} onChange={this.handleBboxFacetChange}/>
-                </Col>
-              </Row>
-              <Row>
-                <Col/>
-                <Col xs={5}>
-                  <FormControl type='number' step='.001'
-                    min='-90' max='0' placeholder='South' name="southBbox"
-                    value={this.props.bboxFacet.southBbox} onChange={this.handleBboxFacetChange}/>
-                </Col>
-                <Col/>
-              </Row>
-            </Container>
-        </div>
+      <div key='1'>
+        <h3>Facets</h3>
+          <h5>Date</h5>
+          <Container>
+            <Row>
+              <Col style={{textAlign:'right', paddingLeft:'5px', paddingRight:'5px'}}>
+                <FormLabel>Start Date: </FormLabel>
+              </Col>
+              <Col>
+                <FormControl type="date" name="startTime" max="3000-12-31"
+                  min="1000-01-01" value={this.props.datetimeFacet.startTime} onChange={this.handleDatetimeFacetChange} />
+              </Col>
+            </Row>
+            <Row>
+              <Col style={{textAlign:'right', paddingLeft:'5px', paddingRight:'5px'}}>
+                <FormLabel>End Date: </FormLabel>
+              </Col>
+              <Col>
+                <FormControl type="date" name="endTime" max="3000-12-31"
+                  min="1000-01-01" value={this.props.datetimeFacet.endTime} onChange={this.handleDatetimeFacetChange} />
+              </Col>
+            </Row>
+          </Container>
+          <br/>
+          <h5>Bbox</h5>
+          <Container style={{alignItems:'centre'}}>
+            <Row>
+              <Col/>
+              <Col xs={5}>
+                <FormControl type='number' step='.001'
+                  min='0' max='90' placeholder='North' name="northBbox" 
+                  value={this.props.bboxFacet.northBbox} onChange={this.handleBboxFacetChange}/>
+              </Col>
+              <Col/>
+            </Row>
+            <Row>
+              <Col xs={{span:5, offset:1}} style={{paddingRight:'0px', paddingLeft:'30px'}}>
+                <FormControl type='number' step='.001'
+                  min='-180' max='0' placeholder='West' name="westBbox" 
+                  value={this.props.bboxFacet.westBbox} onChange={this.handleBboxFacetChange}/>
+              </Col>
+              <Col xs={5} style={{paddingRight:'30px', paddingLeft:'0px'}}>
+                <FormControl type='number' step='.001'
+                  min='0' max='180' placeholder='East' name="eastBbox"
+                  value={this.props.bboxFacet.eastBbox} onChange={this.handleBboxFacetChange}/>
+              </Col>
+            </Row>
+            <Row>
+              <Col/>
+              <Col xs={5}>
+                <FormControl type='number' step='.001'
+                  min='-90' max='0' placeholder='South' name="southBbox"
+                  value={this.props.bboxFacet.southBbox} onChange={this.handleBboxFacetChange}/>
+              </Col>
+              <Col/>
+            </Row>
+          </Container>
+      </div>
     ];
 
-      for (const f of this.props.searchFacets) {
-        const options = [];
-        if (f.options) {
-          for (const option of f.options) {
-            options.push(
-              { value:option, label:option }
-            );
-          };
-        }
-        
-        buffer.push(
-          <div key={f.id}>
-            <br/>
-            <Container>
-              <h5>{f.title}</h5>
-              <Select aria-label={`${f.id} select`} isMulti isClearable name={f.id}
-                options={options} onChange={(e: any) => {this.handleSelectFacetChange(f.id, e)}}/>
-            </Container>
-          </div>
-        ) 
+    for (const f of this.props.searchFacets) {
+      const options = [];
+      const values = [];
+      if (f.options) {
+        for (const option of f.options) {
+          options.push(
+            { value:option, label:option }
+          );
+        };
       }
 
-    return <FormGroup>{buffer}</FormGroup>;
+      if (f.value) {
+        for (const value of f.value) {
+          values.push(
+            { value:value, label:value }
+          );
+        };
+      }
+      
+      buffer.push(
+        <div key={f.id}>
+          <br/>
+          <Container>
+            <h5>{f.title}</h5>
+            <Select aria-label={`${f.id} select`} isMulti isClearable name={f.id} value={values}
+              options={options} onChange={(e: any) => {this.handleSelectFacetChange(f.id, e)}}/>
+          </Container>
+        </div>
+      ) 
+    }
+
+    // compare function to ensure facet list stays in the same order during value changes
+    const compare = (a:any, b:any) => {
+      if (a.key < b.key) {
+        return -1
+      } else if (a.key > b.key){
+        return 1
+      }
+      return 0
+    }
+
+    return <FormGroup>{buffer.sort(compare)}</FormGroup>;
   }
 
   public render(): React.ReactElement {
-    return <>{this.buildFacetBar()}</>;
+    if (this.props.searchFacets) {
+      return <>{this.buildFacetBar()}</>;
+    } else {
+      return <></>
+    }
+    
   }
 }
 
