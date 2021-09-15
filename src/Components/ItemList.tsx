@@ -59,7 +59,7 @@ private buildItemList(): React.ReactElement[] {
 
   public render(): React.ReactElement {
     return <>
-      <div style={{borderBottom: '1px solid grey', textAlign: 'right'}}>{this.props.context ? `${this.props.context.returned} Items`: ''}</div>
+      <div style={{borderBottom: '1px solid grey', textAlign: 'right'}}>{this.props.context ? `${this.props.context.matched} Items`: ''}</div>
       <ListGroup>{this.buildItemList()}</ListGroup>
       <Pagination/>
     </>;

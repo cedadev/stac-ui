@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Collection, Facet } from '../types';
+import { Collection, Facet, Context } from '../types';
 import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
@@ -17,6 +17,7 @@ import Select from 'react-select';
 
 interface FacetStoreProps {
   collection?: Collection;
+  context?: Context;
   availableFacets: Facet[];
   selectedFacets: any;
   bboxFacet: any;
@@ -40,9 +41,15 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
     await this.setFacets();
   }
 
+  public async componentDidUpdate(prevProps:Readonly<SearchCombinedProps>): Promise<void> {
+    // If the context has updated, retrieve new set of queryables
+    if(this.props.context?.collections !== prevProps.context?.collections){
+      await this.setFacets();
+    }
+  }
   public setFacets = async (): Promise<void> => {
-    
-    const result = await requestFacets(this.props.collection?.id);
+    const contextCollections = this.props.context?.collections ?  this.props.context.collections.toString() : undefined
+    const result = await requestFacets(this.props.collection?.id, contextCollections);
     if (result.success) {
       this.props.setAvailableFacets(result.availableFacets);
     }
@@ -170,6 +177,7 @@ const mapStateToProps = (state: StateType): FacetStoreProps => {
     selectedFacets: state.main.selectedFacets,
     bboxFacet: state.main.bboxFacet,
     datetimeFacet: state.main.datetimeFacet,
+    context: state.main.context,
   }
 }
 
