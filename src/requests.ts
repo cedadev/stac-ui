@@ -125,9 +125,18 @@ export async function requestCollectionItems(collection: Collection): Promise<{s
 }
 
 
-export async function requestFacets(collection?:string): Promise<{success: boolean, availableFacets: Facet[]}> {
-  
-  const requestURL = collection ? `${REACT_APP_STAC_API}collections/${collection}/queryables` : `${REACT_APP_STAC_API}queryables`;
+export async function requestFacets(collection?:string, collections?:string): Promise<{success: boolean, availableFacets: Facet[]}> {
+  let requestURL: string
+
+  // Set the request URL based on whether collection id or collections query param set
+  if (collection){
+    requestURL = `${REACT_APP_STAC_API}collections/${collection}/queryables`
+  } else if (collections) {
+    requestURL = `${REACT_APP_STAC_API}queryables?collections=${collections}`
+  } else {
+    requestURL = `${REACT_APP_STAC_API}queryables`
+  }
+
   const response = await requestGET(requestURL);
   const properties = response['properties'];
   // Remove bbox and datetime as these are handled seperately.

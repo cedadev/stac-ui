@@ -41,6 +41,7 @@ export type Facet = {
 export type Context = {
   returned: number;
   matched?: number;
+  collections?: [];
 };
 
 export type PaginationType = {
