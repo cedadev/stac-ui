@@ -82,7 +82,7 @@ class ItemList extends React.Component<ItemListCombinedProps, {}> {
     } else {
       return (
           <>
-            <div style={{borderBottom: '1px solid grey', textAlign: 'right'}}>{this.props.context?.result_count ? `${this.props.context.result_count} Items`: ''}</div>
+            <div style={{borderBottom: '1px solid grey', textAlign: 'right'}}>{this.props.context ? `${this.props.context.matched} Items`: ''}</div>
             <ListGroup>{this.buildItemList()}</ListGroup>
             <Pagination/>
           </>

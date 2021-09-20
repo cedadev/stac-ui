@@ -39,9 +39,10 @@ export type Facet = {
 };
 
 export type Context = {
-  returned: number;
   limit?: number;
   result_count?: number;
+  matched?: number;
+  collections?: [];
 };
 
 export type BboxFacet = {
