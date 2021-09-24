@@ -83,7 +83,7 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
                 <FormLabel>Start Date: </FormLabel>
               </Col>
               <Col>
-                <DatePicker name="startTime" isClearable selectsStart
+                <DatePicker name="startTime" isClearable selectsStart autoComplete='off'
                   startDate={this.props.datetimeFacet.startTime} endDate={this.props.datetimeFacet.endTime}
                   selected={this.props.datetimeFacet.startTime} onChange={(date: any) => this.handleStartDatetimeFacetChange(date)} />
               </Col>
@@ -93,7 +93,7 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
                 <FormLabel>End Date: </FormLabel>
               </Col>
               <Col>
-                <DatePicker name="endTime" isClearable selectsEnd minDate={this.props.datetimeFacet.startTime}
+                <DatePicker name="endTime" isClearable selectsEnd autoComplete='off' minDate={this.props.datetimeFacet.startTime}
                   startDate={this.props.datetimeFacet.startTime} endDate={this.props.datetimeFacet.endTime}
                   selected={this.props.datetimeFacet.endTime} onChange={(date: any) => this.handleEndDatetimeFacetChange(date)} />
               </Col>
