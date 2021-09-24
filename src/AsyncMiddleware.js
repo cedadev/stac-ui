@@ -85,7 +85,7 @@ function constructPOST(state) {
     `${(bboxFacet.northBbox !== '') ? bboxFacet.northBbox : '90'}`,
   ];
 
-  const datetimeString = `${('startTime' in datetimeFacet) ? datetimeFacet.startTime:'..'}:${('endTime' in datetimeFacet) ? datetimeFacet.endTime : '..'}`;
+  const datetimeString = `${(datetimeFacet.startTime) ? datetimeFacet.startTime:'..'}:${(datetimeFacet.startTime) ? datetimeFacet.endTime : '..'}`;
 
   var filters = [];
   for (const facet of searchFacets) {
