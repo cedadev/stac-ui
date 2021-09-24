@@ -1,20 +1,20 @@
-import { Item, Facet, Collection, Context } from '../types';
+import { Item, Facet, Collection, Context, BboxFacet, DatetimeFacet } from '../types';
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
 
 export interface MainState {
   itemList: Item[];
   collectionList: Collection[];
-  selectedFacets: {};
-  bboxFacet: {};
-  datetimeFacet: {};
-  availableFacets: Facet[];
+  bboxFacet: BboxFacet;
+  datetimeFacet: DatetimeFacet;
+  searchFacets: Facet[];
   selectedItem?: Item;
   selectedCollection?: Collection;
-  loading: boolean;
   query: string;
   context?: Context;
-  limit?: number;
+  page: number;
+  itemListLoading: boolean;
+  itemListError: boolean;
 }
 
 export interface StateType {

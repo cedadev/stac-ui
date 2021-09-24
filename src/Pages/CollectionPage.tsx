@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Collection } from '../types';
+import { Collection, Error } from '../types';
 import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
@@ -19,6 +19,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Spinner from 'react-bootstrap/Spinner';
 
 
 interface CollectionProps {
@@ -33,14 +34,24 @@ interface CollectionDispatchProps {
   unsetCollection: () => Action;
 }
 
+type CollectionCombinedProps = CollectionProps & CollectionStoreProps & CollectionDispatchProps;
 
-class CollectionPage extends Component<(CollectionProps & CollectionStoreProps & CollectionDispatchProps), {}>  {
+class CollectionPage extends Component<(CollectionCombinedProps), { loading: boolean, hasError: boolean }>  {
+
+  constructor(props: CollectionCombinedProps) {
+    super(props);
+    this.state = { loading: false, hasError: false };
+  }
 
   public async componentDidMount(): Promise<void> {
+    this.setState({ ...this.state, loading: true });
     const collectionResult = await requestCollection(this.props.collection_id);
-    if (collectionResult.success && collectionResult.collection) {
+    if (collectionResult.success) {
       await this.setCollection(collectionResult.collection);
-    };
+    } else {
+      this.setState({ ...this.state, hasError: true });
+    }
+    this.setState({ ...this.state, loading: false });
   };
 
   public async componentWillUnmount(): Promise<void> {
@@ -56,7 +67,17 @@ class CollectionPage extends Component<(CollectionProps & CollectionStoreProps &
   };
 
   public render(): React.ReactElement {
-    if (this.props.collection) {
+    if (this.state.hasError) {
+      return (
+        <div className="alert alert-danger" role="alert">
+          Error: There was an problem getting the collection
+        </div>
+      )
+    } if (this.state.loading) {
+      return (
+        <Spinner animation="border" role="status" variant="primary" />
+      )
+    } else if (this.props.collection) {
       return (
         <>
           <NavBar/>
@@ -95,13 +116,13 @@ class CollectionPage extends Component<(CollectionProps & CollectionStoreProps &
           </Container>
           <footer></footer>
         </>
-      );
+      )
     } else {
       return (
         <>
           <h3>No Collection</h3>
         </>
-      );
+      )
     }
   }
 }

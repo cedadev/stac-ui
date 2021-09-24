@@ -12,6 +12,7 @@ import SearchPage from './Pages/SearchPage';
 import ItemPage from './Pages/ItemPage';
 import CollectionPage from './Pages/CollectionPage';
 import CollectionListPage from './Pages/CollectionListPage';
+import asyncMiddleware from './AsyncMiddleware';
 
 
 
@@ -21,7 +22,7 @@ const history = createBrowserHistory();
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 /* eslint-enable */
-const middleware = [thunk, routerMiddleware(history)];
+const middleware = [thunk, routerMiddleware(history), asyncMiddleware];
 const store = createStore(
   AppReducer(history),
   composeEnhancers(applyMiddleware(...middleware))

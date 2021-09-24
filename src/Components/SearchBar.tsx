@@ -1,6 +1,5 @@
-import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
-import React, { Component, ReactElement } from 'react';
+import React, { Component } from 'react';
 import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';

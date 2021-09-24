@@ -3,11 +3,12 @@ import { Context } from '../types';
 import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
 import queryString from 'query-string';
+import {Pagination as ReactPagination} from 'react-bootstrap';
 
 
 interface PaginationStoreProps {
   context?: Context;
-  limit?: number;
+  page?: number;
 }
 
 type PaginationCombinedProps = PaginationStoreProps;
@@ -17,7 +18,7 @@ class Pagination extends React.Component<PaginationCombinedProps, {}> {
   public render(): React.ReactElement {
       let params = queryString.parse(window.location.search);
       // set query and facets from params
-      const page = params.page ? Number(params.page): 1;
+      const page = this.props.page ? Number(this.props.page): 1;
 
       delete params['page'];
       let url = "?"      
@@ -25,22 +26,14 @@ class Pagination extends React.Component<PaginationCombinedProps, {}> {
         url += `${key}=${value}&`
       }
 
-      const max = (this.props.context && this.props.context.matched && this.props.limit) ? Math.ceil(this.props.context?.matched/this.props.limit):10;
+      const max = (this.props.context && this.props.context.result_count && this.props.context.limit) ? Math.ceil(this.props.context.result_count/this.props.context.limit): undefined;
 
       return (
-        <nav aria-label="Search results pages">
-          <ul className="pagination">
-            <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
-              <a className="page-link" href={`${url}&page=${page-1}`} tabIndex={-1}>Previous</a>
-            </li>
-            <li className="page-item active">
-              <a className="page-link" href={`${url}&page=${page}`}>{page} <span className="sr-only">(current)</span></a>
-            </li>
-            <li className={`page-item ${page === max ? 'disabled' : ''}`}>
-              <a className="page-link" href={`${url}&page=${page+1}`}>Next</a>
-            </li>
-          </ul>
-        </nav>
+        <ReactPagination>
+          <ReactPagination.Item className={`${page === 1 ? 'disabled' : ''}`} href={`${url}page=${page-1}`} tabIndex={-1} >Previous</ReactPagination.Item>
+          <ReactPagination.Item active href={`${url}&page=${page}`}>{page} <span className="sr-only">(current)</span></ReactPagination.Item>
+          <ReactPagination.Item className={`${max && page === max ? 'disabled' : ''}`} href={`${url}page=${page+1}`} >Next</ReactPagination.Item>
+        </ReactPagination>
       );
   }
 }
@@ -48,7 +41,7 @@ const mapStateToProps = (state: StateType): PaginationStoreProps => {
 
   return {
     context: state.main.context,
-    limit: state.main.limit
+    page: state.main.page,
   }
 }
 

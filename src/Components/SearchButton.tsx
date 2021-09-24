@@ -1,79 +1,67 @@
 import Button from 'react-bootstrap/Button';
 import React, { Component } from 'react';
-import { Item, Collection, Context } from '../types';
-import { requestSearchItems } from '../requests';
+import { Collection, Facet } from '../types';
 import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { push } from 'connected-react-router';
-import { setItemList, setContext } from '../state/actions/actions';
-import queryString from 'query-string';
+import { updateItemList } from '../state/actions/actions';
+import { requestSearchItemsPOST } from '../requests';
 
 
 interface SearchButtonStoreProps {
   query: string;
-  selectedFacets: object;
+  searchFacets: Facet[];
+  bboxFacet: object;
+  datetimeFacet: object;
   page?: number;
   collection?: Collection;
 }
 
 interface SearchButtonDispatchProps {
   push: (path: string) => Action;
-  setItemList: (itemList: Item[]) => Action;
-  setContext: (context: Context) => Action;
+  updateItemList: (updateItemList: boolean) => Action;
 }
 
 type SearchButtonCombinedProps = SearchButtonStoreProps & SearchButtonDispatchProps;
 
 class SearchButton extends Component<SearchButtonCombinedProps, {}> {
 
-  public async componentDidMount(): Promise<void> {
-    let params = queryString.parse(window.location.search);
-    // set query and facets from params
-    if (Object.keys(params).length !== 0 || this.props.collection) {
-      const url = this.constructUrl();
-      await this.setItemList(url);
-    }
-  };
-
-  public setItemList = async (url:string): Promise<void> => {
-    const result = await requestSearchItems(url);
-    if (result.success) {
-      this.props.setItemList(result.itemList);
-      this.props.setContext(result.context);
-    }
-  };
-
   private constructUrl = (): string => {
-    const selectedFacets: any = this.props.selectedFacets;
+    const bboxFacet: any = this.props.bboxFacet;
+    const datetimeFacet: any = this.props.datetimeFacet;
     
-    const bboxString = `${('eastBbox' in selectedFacets  && selectedFacets.eastBbox !== '') ? selectedFacets.eastBbox:'180'},\
-${('northBbox' in selectedFacets  && selectedFacets.northBbox !== '') ? selectedFacets.northBbox:'90'},\
-${('westBbox' in selectedFacets  && selectedFacets.westBbox !== '') ? selectedFacets.westBbox:'-180'},\
-${('southBbox' in selectedFacets  && selectedFacets.southBbox !== '') ? selectedFacets.southBbox:'-90'}`;
+    const bboxString = `${(bboxFacet.westBbox !== '') ? bboxFacet.westBbox : '-180'},\
+${(bboxFacet.southBbox !== '') ? bboxFacet.southBbox : '-90'},\
+${(bboxFacet.eastBbox !== '') ? bboxFacet.eastBbox : '180'},\
+${(bboxFacet.northBbox !== '') ? bboxFacet.northBbox : '90'}`;
 
-    const datetimeString = `${('startTime' in selectedFacets) ? selectedFacets.startTime:'..'}:${('endTime' in selectedFacets) ? selectedFacets.endTime:'..'}`;
+
+    const datetimeString = `${(datetimeFacet.startTime) ? datetimeFacet.startTime.toISOString() : '..'}:${(datetimeFacet.endTime) ? datetimeFacet.endTime.toISOString() : '..'}`;
       
     const filters = [];
-    for (const [key, filter] of Object.entries(this.props.selectedFacets)) {
-      filters.push(`${key}:${filter}`);
-    }
+    for (const facet of this.props.searchFacets) {
+      if (facet.value !== undefined && facet.value !== []) {
+        filters.push(`${facet.id}=${JSON.stringify(facet.value)}`);
+      }
+    };
   
     const url = `?\
 ${`q=${this.props.query ? this.props.query:''}`}\
 ${(datetimeString !== '..:..') ? `&datetime=${datetimeString}`:''}\
-${(bboxString !== '180,90,-180,-90') ? `&bbox=${bboxString}`:''}\
+${(bboxString !== '-180,-90,180,90') ? `&bbox=${bboxString}`:''}\
 ${`${this.props.page && this.props.page !== 1 ? `&page=${this.props.page}`:''}`}\
 ${`${this.props.collection ? `&collections=${this.props.collection.id}`:''}`}\
-${`${filters ? `&filters={${filters.join('AND')}}`:''}`}`;
-      return url;
-    };
+${`${filters.length !== 0 ? `&filters=${filters.join('AND')}`:''}`}`;
+    
+    return url;
+  };
 
 
   public handleSearch = async (e: any): Promise<void> => {
     const url = this.constructUrl();
-    this.setItemList(url);
+    this.props.updateItemList(true);
     this.props.push(url);
   };
 
@@ -84,7 +72,9 @@ ${`${filters ? `&filters={${filters.join('AND')}}`:''}`}`;
 const mapStateToProps = (state: StateType): SearchButtonStoreProps => {
     
   return {
-    selectedFacets: state.main.selectedFacets,
+    searchFacets: state.main.searchFacets,
+    bboxFacet: state.main.bboxFacet,
+    datetimeFacet: state.main.datetimeFacet,
     query: state.main.query,
     collection: state.main.selectedCollection,
   }
@@ -93,12 +83,10 @@ const mapStateToProps = (state: StateType): SearchButtonStoreProps => {
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): SearchButtonDispatchProps => ({
-  setItemList: (itemList: Item[]) =>
-    dispatch(setItemList(itemList)),
-  setContext: (context: Context) =>
-    dispatch(setContext(context)),
   push: (path: string) =>
     dispatch(push(path)),
+  updateItemList: (pdateItemList: boolean) =>
+    dispatch(updateItemList(pdateItemList)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchButton);
