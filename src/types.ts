@@ -53,8 +53,8 @@ export type BboxFacet = {
 };
 
 export type DatetimeFacet = {
-  startTime?: string;
-  endTime?: string;
+  startTime: Date|null;
+  endTime: Date|null;
 };
 
 export type Error = {

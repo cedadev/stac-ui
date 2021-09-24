@@ -39,7 +39,10 @@ export const initialState: MainState = {
     southBbox: '',
     westBbox: '',
   },
-  datetimeFacet: {},
+  datetimeFacet: {
+    startTime: null,
+    endTime: null
+  },
   query: '',
   page: 1,
   itemListLoading: false,
@@ -156,19 +159,13 @@ export function setDatetimeFacet(
   state: MainState,
   payload: setFacetPayload
 ): MainState {
-  if (payload.value) {
-    return {
-      ...state,
-      datetimeFacet: {
-        ...state.datetimeFacet,
-        [payload.id]: payload.value,
-      }
-    };
-  } else {
-    var newState: any = state;
-    delete newState.datetimeFacet[payload.id];
-    return newState;
-  };  
+  return {
+    ...state,
+    datetimeFacet: {
+      ...state.datetimeFacet,
+      [payload.id]: payload.value,
+    }
+  };
 }
 
 export function setQuery(

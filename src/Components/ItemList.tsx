@@ -9,10 +9,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { push } from 'connected-react-router';
 import Pagination from '../Components/Pagination';
 import Spinner from 'react-bootstrap/Spinner';
-import { requestSearchItems, requestSearchItemsPOST } from '../requests';
-import { setUpdateItemList, setItemList, setContext } from '../state/actions/actions';
-import queryString from 'query-string';
-import { ThemeConsumer } from 'react-bootstrap/esm/ThemeProvider';
 
 
 interface ItemListStoreProps {
@@ -37,7 +33,7 @@ class ItemList extends React.Component<ItemListCombinedProps, {}> {
   };
 
   private buildItemList(): React.ReactElement[] {
-    const itemList = this.props.itemList.map(item => {
+    const itemList = this.props.itemList?.map(item => {
       const badges = [];
       for (const [key, value] of Object.entries(item.properties)) {
         badges.push(<Badge key={key} className="badge-secondary" style={{margin:'1px', fontSize:'90%'}}>{`${key}:${value}`}</Badge>)

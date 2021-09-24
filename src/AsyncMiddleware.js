@@ -9,8 +9,12 @@ const asyncFunctionMiddleware = storeAPI => next => action => {
     const body = constructPOST(storeAPI.getState().main);
     
     requestSearchItemsPOST(body).then(result => {
-      storeAPI.dispatch({ type: 'set_item_list', payload: {itemList: result.itemList} })
-      storeAPI.dispatch({ type: 'set_context', payload: {context: result.context} })
+      if (result.success) {
+        storeAPI.dispatch({ type: 'set_item_list', payload: {itemList: result.itemList} })
+        storeAPI.dispatch({ type: 'set_context', payload: {context: result.context} })
+      } else {
+        throw 'Request failed';
+      }
     }).catch(error => { 
       storeAPI.dispatch({ type: 'set_item_list_error', payload: {hasError: true} })
     })
@@ -45,18 +49,22 @@ const asyncFunctionMiddleware = storeAPI => next => action => {
     } else if (state.bbox !== []) {
       // storeAPI.dispatch({ type: 'set_bbox_facet', payload: {id: name, value: Number(bboxFacets[i])} })
     }
-  
+
     if (params.datetime && typeof params.datetime === 'string' && params.datetime !== state.datetime) {
-      const datetimeFacet = params.datetime.split(':');
-      i = 0;
-      for (const name of ['startTime', 'endTime']) {
-        if (datetimeFacet[i] !== '..') {
-          storeAPI.dispatch({ type: 'set_datetime_facet', payload: {id: name, value: datetimeFacet[i]} })
-        };
-        i++;
+      const startTime = params.datetime.match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z:');
+      console.log(startTime)
+      if (startTime) {
+        storeAPI.dispatch({ type: 'set_datetime_facet', payload: {id: 'startTime', value: new Date(startTime[0].substring(-1))} })
+      };
+
+      const endTime = params.datetime.match(':\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z');
+      console.log(endTime)
+      if (endTime) {
+        storeAPI.dispatch({ type: 'set_datetime_facet', payload: {id: 'endTime', value: new Date(endTime[0].substring(1))} })
       };
     } else if (state.datetime !== []) {
-      // storeAPI.dispatch({ type: 'set_bbox_facet', payload: {id: name, value: Number(bboxFacets[i])} })
+      storeAPI.dispatch({ type: 'set_datetime_facet', payload: {id: 'startTime', value: null} })
+      storeAPI.dispatch({ type: 'set_datetime_facet', payload: {id: 'endTime', value: null} })
     }
 
     storeAPI.dispatch({ type: 'update_item_list', payload: {updateItemList: true} })

@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { push } from 'connected-react-router';
 import { setSearchFacets, setSearchFacetValue, setDatetimeFacet, setBboxFacet } from '../state/actions/actions';
-import { requestFacets } from '../requests';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -14,7 +13,7 @@ import FormControl from 'react-bootstrap/FormControl';
 import FormGroup from 'react-bootstrap/FormGroup';
 import FormLabel from 'react-bootstrap/FormLabel';
 import Select from 'react-select';
-import queryString from 'query-string';
+import DatePicker from "react-datepicker";
 
 
 interface FacetStoreProps {
@@ -37,56 +36,6 @@ type SearchCombinedProps = FacetStoreProps & FacetDispatchProps;
 
 class FacetBar extends Component<SearchCombinedProps, {}> {
 
-  public async componentDidMount(): Promise<void> {
-    // set query and facets from params
-    await this.setFacets();
-  }
-
-  public async componentDidUpdate(prevProps:Readonly<SearchCombinedProps>): Promise<void> {
-    // If the context has updated, retrieve new set of queryables
-    if(this.props.context?.collections !== prevProps.context?.collections){
-      await this.setFacets();
-    }
-  }
-  public setFacets = async (): Promise<void> => {
-    let params = queryString.parse(window.location.search);
-
-    // if (params.filter) {
-    //   for ()
-    //   await this.setSearchFacetValue(params.filter);
-    // }
-
-    if (params.bbox && typeof params.bbox === 'string') {
-      const bboxFacets = params.bbox.split(',');
-      const bboxDefaults = ['-180', '-90', '180', '90'];
-      var i = 0;
-      for (const name of ['westBbox', 'southBbox','eastBbox', 'northBbox']) {
-        if (bboxFacets[i] !== bboxDefaults[i]) {
-          await this.setBboxFacet(name, Number(bboxFacets[i]));
-        };        
-        i++;
-      };
-    };
-
-    if (params.datetime && typeof params.datetime === 'string') {
-      const datetimeFacet = params.datetime.split(':');
-      i = 0;
-      for (const name of ['startTime', 'endTime']) {
-        if (datetimeFacet[i] !== '..') {
-          await this.setDatetimeFacet(name, datetimeFacet[i]);
-        };
-        i++;
-      };
-    };
-
-    
-    const contextCollections = this.props.context?.collections ?  this.props.context.collections.toString() : undefined
-    const result = await requestFacets(this.props.collection?.id, contextCollections);
-    if (result.success) {
-      this.props.setSearchFacets(result.availableFacets);
-    }
-  };
-
   private handleBboxFacetChange = async (e: any): Promise<void> => {
     await this.setBboxFacet(e.target.name, e.target.value);
   };
@@ -95,11 +44,23 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
     this.props.setBboxFacet(name, value);
   };
 
-  private handleDatetimeFacetChange = async (e: any): Promise<void> => {
-    await this.setDatetimeFacet(e.target.name, new Date(e.target.value).toISOString());
+  private handleStartDatetimeFacetChange = async (date: any): Promise<void> => {
+    if (date) {
+      await this.setDatetimeFacet('startTime', new Date(date));
+    } else {
+      await this.setDatetimeFacet('startTime', null);
+    }
   };
 
-  private setDatetimeFacet = async (name: string, value: string): Promise<void> => {
+  private handleEndDatetimeFacetChange = async (date: any): Promise<void> => {
+    if (date) {
+      await this.setDatetimeFacet('endTime', new Date(date));
+    } else {
+      await this.setDatetimeFacet('endTime', null);
+    }
+  };
+
+  private setDatetimeFacet = async (name: string, value: any): Promise<void> => {
     this.props.setDatetimeFacet(name, value);
   };
 
@@ -122,8 +83,9 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
                 <FormLabel>Start Date: </FormLabel>
               </Col>
               <Col>
-                <FormControl type="date" name="startTime" max="3000-12-31"
-                  min="1000-01-01" value={this.props.datetimeFacet.startTime} onChange={this.handleDatetimeFacetChange} />
+                <DatePicker name="startTime" isClearable selectsStart
+                  startDate={this.props.datetimeFacet.startTime} endDate={this.props.datetimeFacet.endTime}
+                  selected={this.props.datetimeFacet.startTime} onChange={(date: any) => this.handleStartDatetimeFacetChange(date)} />
               </Col>
             </Row>
             <Row>
@@ -131,8 +93,9 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
                 <FormLabel>End Date: </FormLabel>
               </Col>
               <Col>
-                <FormControl type="date" name="endTime" max="3000-12-31"
-                  min="1000-01-01" value={this.props.datetimeFacet.endTime} onChange={this.handleDatetimeFacetChange} />
+                <DatePicker name="endTime" isClearable selectsEnd minDate={this.props.datetimeFacet.startTime}
+                  startDate={this.props.datetimeFacet.startTime} endDate={this.props.datetimeFacet.endTime}
+                  selected={this.props.datetimeFacet.endTime} onChange={(date: any) => this.handleEndDatetimeFacetChange(date)} />
               </Col>
             </Row>
           </Container>

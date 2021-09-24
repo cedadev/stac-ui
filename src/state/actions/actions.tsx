@@ -113,7 +113,7 @@ import {
 
   export const setDatetimeFacet = (
     id: string,
-    value: any,
+    value: Date|null,
   ): ActionType<setFacetPayload> => ({
     type: setDatetimeFacetType,
     payload: {
