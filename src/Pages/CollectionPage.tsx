@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Collection, Error } from '../types';
+import { Collection } from '../types';
 import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';

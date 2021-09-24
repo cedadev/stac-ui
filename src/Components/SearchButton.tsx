@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { push } from 'connected-react-router';
 import { updateItemList } from '../state/actions/actions';
-import { requestSearchItemsPOST } from '../requests';
 
 
 interface SearchButtonStoreProps {

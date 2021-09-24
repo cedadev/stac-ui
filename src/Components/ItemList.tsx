@@ -1,5 +1,5 @@
 import React from 'react';
-import { Item, Collection, Context, Error, Facet } from '../types'
+import { Item, Collection, Context } from '../types'
 import ListGroup from 'react-bootstrap/ListGroup';
 import Badge from 'react-bootstrap/Badge';
 import { StateType } from '../state/app.types';

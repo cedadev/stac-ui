@@ -13,7 +13,7 @@ const asyncFunctionMiddleware = storeAPI => next => action => {
         storeAPI.dispatch({ type: 'set_item_list', payload: {itemList: result.itemList} })
         storeAPI.dispatch({ type: 'set_context', payload: {context: result.context} })
       } else {
-        throw 'Request failed';
+        throw new Error('Request failed');
       }
     }).catch(error => { 
       storeAPI.dispatch({ type: 'set_item_list_error', payload: {hasError: true} })

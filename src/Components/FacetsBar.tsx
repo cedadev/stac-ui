@@ -14,6 +14,7 @@ import FormGroup from 'react-bootstrap/FormGroup';
 import FormLabel from 'react-bootstrap/FormLabel';
 import Select from 'react-select';
 import DatePicker from "react-datepicker";
+import { requestFacets } from '../requests';
 
 
 interface FacetStoreProps {
@@ -35,6 +36,19 @@ interface FacetDispatchProps {
 type SearchCombinedProps = FacetStoreProps & FacetDispatchProps;
 
 class FacetBar extends Component<SearchCombinedProps, {}> {
+
+  public async componentDidMount(): Promise<void> {
+    // set query and facets from params
+    await this.setFacets();
+  }
+
+  public setFacets = async (): Promise<void> => {
+    const contextCollections = this.props.context?.collections ?  this.props.context.collections.toString() : undefined
+    const result = await requestFacets(this.props.collection?.id, contextCollections);
+    if (result.success) {
+      this.props.setSearchFacets(result.availableFacets);
+    }
+  };
 
   private handleBboxFacetChange = async (e: any): Promise<void> => {
     await this.setBboxFacet(e.target.name, e.target.value);
