@@ -13,6 +13,7 @@ class MetaDataList extends React.Component<Props, {}> {
         <ListGroup.Item
           id='metadata-list-item'
           key={metaData[0]}
+          style={{wordWrap: 'break-word'}}
         >
           {`${metaData[0]}: ${metaData[1]}`} 
         </ListGroup.Item>

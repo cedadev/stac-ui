@@ -1,5 +1,6 @@
 import { requestSearchItemsPOST } from './requests';
 import queryString from 'query-string';
+import { isNullishCoalesce } from 'typescript';
 
 const asyncFunctionMiddleware = storeAPI => next => action => {
   console.log(action.type)
@@ -52,13 +53,11 @@ const asyncFunctionMiddleware = storeAPI => next => action => {
 
     if (params.datetime && typeof params.datetime === 'string' && params.datetime !== state.datetime) {
       const startTime = params.datetime.match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z:');
-      console.log(startTime)
       if (startTime) {
         storeAPI.dispatch({ type: 'set_datetime_facet', payload: {id: 'startTime', value: new Date(startTime[0].substring(-1))} })
       };
 
       const endTime = params.datetime.match(':\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z');
-      console.log(endTime)
       if (endTime) {
         storeAPI.dispatch({ type: 'set_datetime_facet', payload: {id: 'endTime', value: new Date(endTime[0].substring(1))} })
       };
@@ -77,6 +76,8 @@ function constructPOST(state) {
   const searchFacets = state.searchFacets;
   const bboxFacet = state.bboxFacet;
   const datetimeFacet = state.datetimeFacet;
+  const pathname = window.location.pathname;
+  const collection = pathname.startsWith('/collections/') ? pathname.split('/')[2] : null;
   
   const bboxList = [
     `${(bboxFacet.westBbox !== '') ? bboxFacet.westBbox : '-180'}`,
@@ -98,7 +99,7 @@ function constructPOST(state) {
           ]
         }
       )
-    } else if (facet.value !== undefined && facet.value !== []) {
+    } else if (facet.value !== undefined && facet.value.length > 1) {
       var facet_filters = [];
       for (const value of facet.value) {
         facet_filters.push(
@@ -119,7 +120,7 @@ function constructPOST(state) {
   }
  
   const POSTbody = {
-    ...(state.selectedCollection && {collections: [state.selectedCollection.id]}),
+    ...(collection && {collections: [collection]}),
     ...((bboxList[0] !== '-180' || bboxList[1] !== '-90' || bboxList[2] !== '180' || bboxList[3] !== '90') && {bbox: bboxList}),
     ...(datetimeString !== '..:..' && {datetime: datetimeString}),
     ...(filters.length !== 0 && {filter: {"and":filters}}),

@@ -41,7 +41,7 @@ ${(bboxFacet.northBbox !== '') ? bboxFacet.northBbox : '90'}`;
       
     const filters = [];
     for (const facet of this.props.searchFacets) {
-      if (facet.value !== undefined && facet.value !== []) {
+      if (facet.value !== undefined && facet.value.length >= 1) {
         filters.push(`${facet.id}=${JSON.stringify(facet.value)}`);
       }
     };
