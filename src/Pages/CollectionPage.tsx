@@ -4,7 +4,7 @@ import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { setCollection, unsetCollection } from '../state/actions/actions';
+import { setCollection, unsetCollection, updateItemList } from '../state/actions/actions';
 import { requestCollection } from '../requests';
 import NavBar from "../Components/NavBar";
 import BreadCrumb from "../Components/BreadCrumb";
@@ -32,6 +32,7 @@ interface CollectionStoreProps {
 interface CollectionDispatchProps {
   setCollection: (selectedCollection: Collection) => Action;
   unsetCollection: () => Action;
+  updateItemList: (updateItemList: boolean) => Action;
 }
 
 type CollectionCombinedProps = CollectionProps & CollectionStoreProps & CollectionDispatchProps;
@@ -52,6 +53,7 @@ class CollectionPage extends Component<(CollectionCombinedProps), { loading: boo
       this.setState({ ...this.state, hasError: true });
     }
     this.setState({ ...this.state, loading: false });
+    this.props.updateItemList(true);
   };
 
   public async componentWillUnmount(): Promise<void> {
@@ -140,6 +142,8 @@ const mapDispatchToProps = (
     dispatch(setCollection(collection)),
   unsetCollection: () =>
     dispatch(unsetCollection()),
+  updateItemList: (pdateItemList: boolean) =>
+    dispatch(updateItemList(pdateItemList)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CollectionPage);

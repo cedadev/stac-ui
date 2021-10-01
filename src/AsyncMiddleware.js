@@ -1,6 +1,5 @@
 import { requestSearchItemsPOST } from './requests';
 import queryString from 'query-string';
-import { isNullishCoalesce } from 'typescript';
 
 const asyncFunctionMiddleware = storeAPI => next => action => {
   console.log(action.type)
@@ -21,7 +20,8 @@ const asyncFunctionMiddleware = storeAPI => next => action => {
     })
     
     storeAPI.dispatch({ type: 'set_item_list_loading', payload: {isLoading: false} })
-  } else if (action.type === '@@router/LOCATION_CHANGE') {
+  } else if (action.type === '@@router/LOCATION_CHANGE' && !window.location.pathname.startsWith('/collections')) {
+    // CHANGE OF ADDRESS SET STATE FROM URL PARAMETERS
     let params = queryString.parse(window.location.search);
     let state = storeAPI.getState().main;
     
@@ -118,7 +118,7 @@ function constructPOST(state) {
       )
     }
   }
- 
+
   const POSTbody = {
     ...(collection && {collections: [collection]}),
     ...((bboxList[0] !== '-180' || bboxList[1] !== '-90' || bboxList[2] !== '180' || bboxList[3] !== '90') && {bbox: bboxList}),
