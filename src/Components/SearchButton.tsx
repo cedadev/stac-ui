@@ -83,7 +83,7 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): SearchButtonDispatchProps => ({
   push: (path: string) =>
-    dispatch(push(path)),
+    dispatch(push(path, 'search_button')),
   updateItemList: (pdateItemList: boolean) =>
     dispatch(updateItemList(pdateItemList)),
 });

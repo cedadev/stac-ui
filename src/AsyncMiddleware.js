@@ -20,7 +20,7 @@ const asyncFunctionMiddleware = storeAPI => next => action => {
     })
     
     storeAPI.dispatch({ type: 'set_item_list_loading', payload: {isLoading: false} })
-  } else if (action.type === '@@router/LOCATION_CHANGE' && !window.location.pathname.startsWith('/collections')) {
+  } else if (action.type === '@@router/LOCATION_CHANGE' && window.location.search !== '' && action.payload.location?.state !== 'search_button' && !window.location.pathname.startsWith('/collections')) {
     // CHANGE OF ADDRESS SET STATE FROM URL PARAMETERS
     let params = queryString.parse(window.location.search);
     let state = storeAPI.getState().main;
