@@ -20,7 +20,7 @@ interface SearchButtonStoreProps {
 
 interface SearchButtonDispatchProps {
   push: (path: string) => Action;
-  updateItemList: (updateItemList: boolean) => Action;
+  updateItemList: () => Action;
 }
 
 type SearchButtonCombinedProps = SearchButtonStoreProps & SearchButtonDispatchProps;
@@ -60,7 +60,7 @@ ${`${filters.length !== 0 ? `&filters=${filters.join('AND')}`:''}`}`;
 
   public handleSearch = async (e: any): Promise<void> => {
     const url = this.constructUrl();
-    this.props.updateItemList(true);
+    this.props.updateItemList();
     this.props.push(url);
   };
 
@@ -84,8 +84,8 @@ const mapDispatchToProps = (
 ): SearchButtonDispatchProps => ({
   push: (path: string) =>
     dispatch(push(path, 'search_button')),
-  updateItemList: (pdateItemList: boolean) =>
-    dispatch(updateItemList(pdateItemList)),
+  updateItemList: () =>
+    dispatch(updateItemList()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchButton);

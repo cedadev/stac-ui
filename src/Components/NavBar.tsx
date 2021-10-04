@@ -9,7 +9,6 @@ import { REACT_APP_STAC_API } from '../config';
 class NavBar extends React.Component {
 
   public render(): React.ReactElement {
-    console.log(`${REACT_APP_STAC_API}${window.location.pathname}`)
     return (
       <Navbar bg="light" expand="lg" variant="light" >
         <Container >

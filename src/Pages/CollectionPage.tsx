@@ -32,7 +32,7 @@ interface CollectionStoreProps {
 interface CollectionDispatchProps {
   setCollection: (selectedCollection: Collection) => Action;
   unsetCollection: () => Action;
-  updateItemList: (updateItemList: boolean) => Action;
+  updateItemList: () => Action;
 }
 
 type CollectionCombinedProps = CollectionProps & CollectionStoreProps & CollectionDispatchProps;
@@ -53,7 +53,7 @@ class CollectionPage extends Component<(CollectionCombinedProps), { loading: boo
       this.setState({ ...this.state, hasError: true });
     }
     this.setState({ ...this.state, loading: false });
-    this.props.updateItemList(true);
+    this.props.updateItemList();
   };
 
   public async componentWillUnmount(): Promise<void> {
@@ -142,8 +142,8 @@ const mapDispatchToProps = (
     dispatch(setCollection(collection)),
   unsetCollection: () =>
     dispatch(unsetCollection()),
-  updateItemList: (pdateItemList: boolean) =>
-    dispatch(updateItemList(pdateItemList)),
+  updateItemList: () =>
+    dispatch(updateItemList()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CollectionPage);

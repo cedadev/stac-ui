@@ -193,7 +193,7 @@ export async function requestCollectionItems(collection: Collection): Promise<{s
 };
 
 
-export async function requestFacets(collection?:string, collections?:string): Promise<{success: boolean, availableFacets: Facet[]}> {
+export async function requestFacets(collection?:string, collections?:string): Promise<{success: boolean, availableFacets: any}> {
   let requestURL: string
 
   // Set the request URL based on whether collection id or collections query param set
@@ -207,25 +207,9 @@ export async function requestFacets(collection?:string, collections?:string): Pr
 
   const response = await requestGET(requestURL);
   if (response.ok) {
-    const properties = response.result.properties;
-    // Remove bbox and datetime as these are handled seperately.
-    delete properties.bbox;
-    delete properties.datetime;
-
-    const availableFacets = [];
-    for (const key in properties) {
-      const f = properties[key];
-      availableFacets.push({
-        id: key,
-        title: f.title,
-        type: f.type,
-        options: f.enum,
-      });
-    };
-    
     const result = {
       success: true,
-      availableFacets: availableFacets
+      availableFacets: response.result.properties,
     };
     return result;
   } else {

@@ -1,9 +1,66 @@
-import { requestSearchItemsPOST } from './requests';
+import { requestSearchItemsPOST, requestFacets } from './requests';
 import queryString from 'query-string';
 
 const asyncFunctionMiddleware = storeAPI => next => action => {
   console.log(action.type)
+  let state = storeAPI.getState().main;
   if (action.type === 'update_item_list') {
+    // Set the item list to display loading 
+    storeAPI.dispatch({ type: 'set_item_list_loading', payload: {isLoading: true} })
+    const body = constructPOST(state);
+    
+    requestSearchItemsPOST(body).then(result => {
+      if (result.success) {
+        storeAPI.dispatch({ type: 'set_item_list', payload: {itemList: result.itemList} })
+        storeAPI.dispatch({ type: 'set_context', payload: {context: result.context} })
+        if (!state.collection) {
+          storeAPI.dispatch({ type: 'update_search_facets', payload: {context: result.context} })
+        }
+      } else {
+        throw new Error('Request failed');
+      }
+    }).catch(error => { 
+      storeAPI.dispatch({ type: 'set_item_list_error', payload: {hasError: true} })
+    })
+    
+    storeAPI.dispatch({ type: 'set_item_list_loading', payload: {isLoading: false} })
+  }
+
+  if (action.type === 'update_search_facets') {
+    requestFacets(state.collection?.id, action.payload.context?.collections.toString()).then(result => {
+      
+      if (result.success) {
+        const properties = result.availableFacets;
+        // Remove bbox and datetime as these are handled seperately.
+        delete properties.bbox;
+        delete properties.datetime;
+
+        const availableFacets = [];
+        for (const key in properties) {
+          const f = properties[key];
+          let availableFacet = {
+            id: key,
+            title: f.title,
+            type: f.type,
+            options: f.enum,
+          }
+          const searchFacet = state.searchFacets.find(f => f.id === key);
+          if (searchFacet) {
+            availableFacet = {
+              ...availableFacet,
+              value: searchFacet.value
+            }
+          }
+          availableFacets.push(availableFacet);
+        };
+        storeAPI.dispatch({ type: 'set_search_facets', payload: {searchFacets: availableFacets} })
+      } else {
+        throw new Error('Request failed');
+      }
+    })
+  }
+
+  if (action.type === 'update_search') {
     // Set the item list to display loading 
     storeAPI.dispatch({ type: 'set_item_list_loading', payload: {isLoading: true} })
     const body = constructPOST(storeAPI.getState().main);
@@ -20,14 +77,15 @@ const asyncFunctionMiddleware = storeAPI => next => action => {
     })
     
     storeAPI.dispatch({ type: 'set_item_list_loading', payload: {isLoading: false} })
-  } else if (action.type === '@@router/LOCATION_CHANGE' && window.location.search !== '' && action.payload.location?.state !== 'search_button' && !window.location.pathname.startsWith('/collections')) {
+  }
+  
+  if (action.type === '@@router/LOCATION_CHANGE' && window.location.search !== '' && action.payload.location?.state !== 'search_button' && !window.location.pathname.startsWith('/collections')) {
     // CHANGE OF ADDRESS SET STATE FROM URL PARAMETERS
     let params = queryString.parse(window.location.search);
-    let state = storeAPI.getState().main;
     
-    if (params.query && typeof params.query === 'string' && params.query !== state.query) {
-      storeAPI.dispatch({ type: 'set_query', payload: {query: params.query} })
-    } else if (state.query !== '') {
+    if (params.q && typeof params.q === 'string' && params.q !== state.query) {
+      storeAPI.dispatch({ type: 'set_query', payload: {query: params.q} })
+    } else if (state.q !== '') {
       storeAPI.dispatch({ type: 'set_query', payload: {query: ''} })
     }
 

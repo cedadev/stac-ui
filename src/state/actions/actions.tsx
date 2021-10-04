@@ -4,6 +4,7 @@ import {
     selectItemType,
     deselectItemType,
     setSearchFacetsType,
+    updateSearchFacetsType,
     setSearchFacetValueType,
     setDatetimeFacetType,
     setBboxFacetType,
@@ -13,7 +14,6 @@ import {
     setContextType,
     setLimitType,
     setPageType,
-    setUpdateItemListType,
     updateItemListType,
     setItemListLoadingType,
     setItemListErrorType,
@@ -27,8 +27,6 @@ import {
     setContextPayload,
     setLimitPayload,
     setPagePayload,
-    setUpdateItemListPayload,
-    updateItemListPayload,
     setItemListLoadingPayload,
     setItemListErrorPayload,
   } from './actions.types';
@@ -79,6 +77,15 @@ import {
   export function unsetCollection() {
     return { type: unsetCollectionType }
   }
+
+  export const updateSearchFacets = (
+    context: Context
+  ): ActionType<setContextPayload> => ({
+    type: updateSearchFacetsType,
+    payload: {
+      context,
+    },
+});
 
   export const setSearchFacets = (
     searchFacets: Facet[]
@@ -158,23 +165,9 @@ import {
     },
   });
 
-  export const setUpdateItemList = (
-    updateItemList: boolean
-  ): ActionType<setUpdateItemListPayload> => ({
-    type: setUpdateItemListType,
-    payload: {
-      updateItemList,
-    },
-  });
-
-  export const updateItemList = (
-    updateItemList: boolean
-  ): ActionType<updateItemListPayload> => ({
-    type: updateItemListType,
-    payload: {
-      updateItemList,
-    },
-  });
+  export function updateItemList() {
+    return { type: updateItemListType }
+  }
 
   export const setItemListLoading = (
     isLoading: boolean

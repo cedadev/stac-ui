@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Collection, Facet, Context } from '../types';
 import { StateType } from '../state/app.types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { push } from 'connected-react-router';
-import { setSearchFacets, setSearchFacetValue, setDatetimeFacet, setBboxFacet } from '../state/actions/actions';
+import { setSearchFacetValue, setDatetimeFacet, setBboxFacet } from '../state/actions/actions';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -14,19 +13,15 @@ import FormGroup from 'react-bootstrap/FormGroup';
 import FormLabel from 'react-bootstrap/FormLabel';
 import Select from 'react-select';
 import DatePicker from "react-datepicker";
-import { requestFacets } from '../requests';
 
 
 interface FacetStoreProps {
-  collection?: Collection;
-  context?: Context;
   bboxFacet: any;
   datetimeFacet: any;
   searchFacets: any;
 }
 
 interface FacetDispatchProps {
-  setSearchFacets: (searchFacets: Facet[]) => Action;
   setSearchFacetValue: (id: string, value: any) => Action;
   setBboxFacet: (id: string, value: any) => Action;
   setDatetimeFacet: (id: string, value: any) => Action;
@@ -36,46 +31,25 @@ interface FacetDispatchProps {
 type SearchCombinedProps = FacetStoreProps & FacetDispatchProps;
 
 class FacetBar extends Component<SearchCombinedProps, {}> {
-
-  public async componentDidMount(): Promise<void> {
-    // set query and facets from params
-    await this.setFacets();
-  }
-
-  public setFacets = async (): Promise<void> => {
-    const contextCollections = this.props.context?.collections ?  this.props.context.collections.toString() : undefined
-    const result = await requestFacets(this.props.collection?.id, contextCollections);
-    if (result.success) {
-      this.props.setSearchFacets(result.availableFacets);
-    }
-  };
-
+  
   private handleBboxFacetChange = async (e: any): Promise<void> => {
-    await this.setBboxFacet(e.target.name, e.target.value);
+    this.props.setBboxFacet(e.target.name, e.target.value);
   };
   
-  private setBboxFacet = async (name: string, value: number): Promise<void> => {
-    this.props.setBboxFacet(name, value);
-  };
-
   private handleStartDatetimeFacetChange = async (date: any): Promise<void> => {
     if (date) {
-      await this.setDatetimeFacet('startTime', new Date(date));
+      this.props.setDatetimeFacet('startTime', new Date(date));
     } else {
-      await this.setDatetimeFacet('startTime', null);
+      this.props.setDatetimeFacet('startTime', null);
     }
   };
 
   private handleEndDatetimeFacetChange = async (date: any): Promise<void> => {
     if (date) {
-      await this.setDatetimeFacet('endTime', new Date(date));
+      this.props.setDatetimeFacet('endTime', new Date(date));
     } else {
-      await this.setDatetimeFacet('endTime', null);
+      this.props.setDatetimeFacet('endTime', null);
     }
-  };
-
-  private setDatetimeFacet = async (name: string, value: any): Promise<void> => {
-    this.props.setDatetimeFacet(name, value);
   };
 
   private handleSelectFacetChange = async (id: string, selectedOptions: { value:string, label:string }[]) => {
@@ -207,19 +181,15 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
 const mapStateToProps = (state: StateType): FacetStoreProps => {
     
   return {
-    collection: state.main.selectedCollection,
     searchFacets: state.main.searchFacets,
     bboxFacet: state.main.bboxFacet,
     datetimeFacet: state.main.datetimeFacet,
-    context: state.main.context,
   }
 }
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): FacetDispatchProps => ({
-  setSearchFacets: (searchFacets: Facet[]) =>
-    dispatch(setSearchFacets(searchFacets)),
   setSearchFacetValue: (id: string, value: any) =>
     dispatch(setSearchFacetValue(id, value)),
   setBboxFacet: (id: string, value: any) =>
