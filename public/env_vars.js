@@ -1,0 +1,1 @@
+window.STAC_API_URL = "https://api.stac.ceda.ac.uk/";
