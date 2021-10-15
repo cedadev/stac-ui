@@ -3,17 +3,16 @@ import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
 
 export interface MainState {
-  itemList: Item[];
+  itemList?: Item[];
   collectionList: Collection[];
   bboxFacet: BboxFacet;
   datetimeFacet: DatetimeFacet;
   searchFacets: Facet[];
-  selectedItem?: Item;
-  selectedCollection?: Collection;
+  item?: Item;
+  collection?: Collection;
   query: string;
   context?: Context;
   page: number;
-  itemListLoading: boolean;
   itemListError: boolean;
 }
 

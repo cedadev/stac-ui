@@ -5,7 +5,7 @@ import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { push } from 'connected-react-router';
-import { selectItem } from '../state/actions/actions';
+import { setItem, unsetItem } from '../state/actions/actions';
 import { requestItem } from '../requests';
 import NavBar from "../Components/NavBar";
 import Spacial from "../Components/Spacial";
@@ -23,11 +23,12 @@ interface ItemProps {
   collection_id: string;
 }
 interface ItemStoreProps {
-  selectedItem: Item|undefined;
+  item?: Item;
 }
 
 interface ItemDispatchProps {
-  selectItem: (selectedItem: Item) => Action;
+  setItem: (setItem: Item) => Action;
+  unsetItem: () => Action;
   push: (path: string) => Action;
 }
 
@@ -39,39 +40,35 @@ class ItemPage extends Component<ItemCombinedProps, {}>  {
     const result = await requestItem(this.props.collection_id, this.props.item_id);
 
     if (result.success && result.item) {
-      await this.selectItem(result.item);
-    } else {
-
+      this.props.setItem(result.item);
     }
-    if (result.success && result.item) {
-    };
   }
-  
-  public selectItem = async (item: Item): Promise<void> => {
-    this.props.selectItem(item);
-  };
 
+  public async componentWillUnmount(): Promise<void> {
+    this.props.unsetItem();
+  };
+  
   public render(): React.ReactElement {
-    if (this.props.selectedItem) {
+    if (this.props.item) {
       return (
         <>
           <NavBar/>
           <Container>
-            <BreadCrumb collection={this.props.selectedItem.collection} item_id={this.props.selectedItem.id}/>
+            <BreadCrumb collection={this.props.item.collection} item_id={this.props.item.id}/>
             <Row>
               <Col xs={12} sm={8} style={{textAlign: 'left'}}>
-                <h3 style={{marginBottom:'1em'}}>{this.props.selectedItem.id}</h3>
+                <h3 style={{marginBottom:'1em'}}>{this.props.item.id}</h3>
                 <h5>Assets</h5>
-                <AssetList assets={this.props.selectedItem.assets} />
+                <AssetList assets={this.props.item.assets} />
               </Col>
               <Col>
-              { this.props.selectedItem.properties.datetime && 
-                <><Temporal interval={[this.props.selectedItem.properties.datetime]}/><br/></> 
+              { this.props.item.properties.datetime && 
+                <><Temporal interval={[this.props.item.properties.datetime]}/><br/></> 
               }
-              { this.props.selectedItem.bbox && 
-                <><Spacial bbox={this.props.selectedItem.bbox}/><br/></>
+              { this.props.item.bbox && 
+                <><Spacial bbox={this.props.item.bbox}/><br/></>
               }
-                <MetaDataList metaData={this.props.selectedItem.properties} />
+                <MetaDataList metaData={this.props.item.properties} />
               </Col>
             </Row>
           </Container>
@@ -92,15 +89,17 @@ class ItemPage extends Component<ItemCombinedProps, {}>  {
 
 const mapStateToProps = (state: StateType): ItemStoreProps => {
   return {
-    selectedItem: state.main.selectedItem,
+    item: state.main.item,
   }
 }
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): ItemDispatchProps => ({
-  selectItem: (selectedItem: Item) =>
-    dispatch(selectItem(selectedItem)),
+  setItem: (item: Item) =>
+    dispatch(setItem(item)),
+  unsetItem: () => 
+    dispatch(unsetItem()),
   push: (path: string) =>
     dispatch(push(path)),
 });

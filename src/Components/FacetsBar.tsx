@@ -4,7 +4,7 @@ import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { push } from 'connected-react-router';
-import { setSearchFacetValue, setDatetimeFacet, setBboxFacet } from '../state/actions/actions';
+import { setSearchFacet, setDatetimeFacet, setBboxFacet } from '../state/actions/actions';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -22,7 +22,7 @@ interface FacetStoreProps {
 }
 
 interface FacetDispatchProps {
-  setSearchFacetValue: (id: string, value: any) => Action;
+  setSearchFacet: (id: string, value: any) => Action;
   setBboxFacet: (id: string, value: any) => Action;
   setDatetimeFacet: (id: string, value: any) => Action;
   push: (path: string) => Action;
@@ -54,9 +54,9 @@ class FacetBar extends Component<SearchCombinedProps, {}> {
 
   private handleSelectFacetChange = async (id: string, selectedOptions: { value:string, label:string }[]) => {
     if (selectedOptions !== []) {
-      this.props.setSearchFacetValue(id, selectedOptions.map(option => { return option.value }));
+      this.props.setSearchFacet(id, selectedOptions.map(option => { return option.value }));
     } else {
-      this.props.setSearchFacetValue(id, []);
+      this.props.setSearchFacet(id, []);
     };
   }
 
@@ -190,8 +190,8 @@ const mapStateToProps = (state: StateType): FacetStoreProps => {
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): FacetDispatchProps => ({
-  setSearchFacetValue: (id: string, value: any) =>
-    dispatch(setSearchFacetValue(id, value)),
+  setSearchFacet: (id: string, value: any) =>
+    dispatch(setSearchFacet(id, value)),
   setBboxFacet: (id: string, value: any) =>
     dispatch(setBboxFacet(id, value)),
   setDatetimeFacet: (id: string, value: any) =>

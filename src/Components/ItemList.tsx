@@ -9,18 +9,19 @@ import { ThunkDispatch } from 'redux-thunk';
 import { push } from 'connected-react-router';
 import Pagination from '../Components/Pagination';
 import Spinner from 'react-bootstrap/Spinner';
+import { unsetItemList } from '../state/actions/actions';
 
 
 interface ItemListStoreProps {
   collection?: Collection;
-  itemList: Item[];
+  itemList?: Item[];
   context?: Context;
-  loading: boolean;
   hasError: boolean;
 }
 
 interface ItemListDispatchProps {
   push: (path: string) => Action;
+  unsetItemList: () => Action;
 }
 
 type ItemListCombinedProps = ItemListStoreProps & ItemListDispatchProps
@@ -28,12 +29,16 @@ type ItemListCombinedProps = ItemListStoreProps & ItemListDispatchProps
 
 class ItemList extends React.Component<ItemListCombinedProps, {}> {
 
+  public async componentWillUnmount(): Promise<void> {
+    this.props.unsetItemList();
+  };
+
   public handleItemClick = async (item: Item): Promise<void> => {
     this.props.push(`/collections/${item.collection.id}/items/${item.id}`);
   };
 
-  private buildItemList(): React.ReactElement[] {
-    const itemList = this.props.itemList?.map(item => {
+  private buildItemList(itemList: Item[]): React.ReactElement[] {
+    const items = itemList.map(item => {
       const badges = [];
       for (const [key, value] of Object.entries(item.properties)) {
         badges.push(<Badge key={key} className="badge-secondary" style={{margin:'1px', fontSize:'90%'}}>{`${key}:${value}`}</Badge>)
@@ -55,7 +60,7 @@ class ItemList extends React.Component<ItemListCombinedProps, {}> {
       );
       return listItem;
     });
-    return itemList;
+    return items;
   }
 
   public render(): React.ReactElement {
@@ -65,34 +70,35 @@ class ItemList extends React.Component<ItemListCombinedProps, {}> {
           Error: There was an problem getting the search results
         </div>
       )
-    } else if(this.props.loading) {
-      return (
-        <Spinner animation="border" role="status" variant="primary" />
-      )
-    } else if (this.props.itemList.length === 0) {
-      return (
-        <div className="alert alert-info" role="alert">
-          No results found
-        </div>
-      )
-    } else {
-      return (
+    } else if(this.props.itemList) {
+      if (this.props.itemList.length === 0) {
+        return (
+          <div className="alert alert-info" role="alert">
+            No results found
+          </div>
+        )
+      } else {
+        return (
           <>
             <div style={{borderBottom: '1px solid grey', textAlign: 'right'}}>{this.props.context ? `${this.props.context.matched} Items`: ''}</div>
-            <ListGroup>{this.buildItemList()}</ListGroup>
+            <ListGroup>{this.buildItemList(this.props.itemList)}</ListGroup>
             <Pagination/>
           </>
         )
+      }
+    } else {
+      return (
+        <Spinner animation="border" role="status" variant="primary" />
+      )
     }
   }
 }
 
 const mapStateToProps = (state: StateType): ItemListStoreProps => {
   return {
-    collection: state.main.selectedCollection,
+    collection: state.main.collection,
     itemList: state.main.itemList,
     context: state.main.context,
-    loading: state.main.itemListLoading,
     hasError: state.main.itemListError,
   }
 }
@@ -102,6 +108,8 @@ const mapDispatchToProps = (
 ): ItemListDispatchProps => ({
   push: (path: string) =>
     dispatch(push(path)),
+  unsetItemList: () =>
+    dispatch(unsetItemList()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ItemList);

@@ -1,29 +1,24 @@
 import { requestSearchItemsPOST, requestFacets } from './requests';
 import queryString from 'query-string';
+import constructPOST from './Functions/ConstructPOST';
 
 const asyncFunctionMiddleware = storeAPI => next => action => {
   console.log(action.type)
+  console.log(action)
   let state = storeAPI.getState().main;
   if (action.type === 'update_item_list') {
-    // Set the item list to display loading 
-    storeAPI.dispatch({ type: 'set_item_list_loading', payload: {isLoading: true} })
     const body = constructPOST(state);
-    
     requestSearchItemsPOST(body).then(result => {
       if (result.success) {
         storeAPI.dispatch({ type: 'set_item_list', payload: {itemList: result.itemList} })
         storeAPI.dispatch({ type: 'set_context', payload: {context: result.context} })
-        if (!state.collection) {
-          storeAPI.dispatch({ type: 'update_search_facets', payload: {context: result.context} })
-        }
+        storeAPI.dispatch({ type: 'update_search_facets', payload: {context: result.context} })
       } else {
         throw new Error('Request failed');
       }
     }).catch(error => { 
       storeAPI.dispatch({ type: 'set_item_list_error', payload: {hasError: true} })
     })
-    
-    storeAPI.dispatch({ type: 'set_item_list_loading', payload: {isLoading: false} })
   }
 
   if (action.type === 'update_search_facets') {
@@ -79,7 +74,7 @@ const asyncFunctionMiddleware = storeAPI => next => action => {
     storeAPI.dispatch({ type: 'set_item_list_loading', payload: {isLoading: false} })
   }
   
-  if (action.type === '@@router/LOCATION_CHANGE' && window.location.search !== '' && action.payload.location?.state !== 'search_button' && !window.location.pathname.startsWith('/collections')) {
+  if (action.type === '@@router/LOCATION_CHANGE' && window.location.search !== '' && action.payload.location?.state !== 'search_button') {
     // CHANGE OF ADDRESS SET STATE FROM URL PARAMETERS
     let params = queryString.parse(window.location.search);
     
@@ -128,64 +123,5 @@ const asyncFunctionMiddleware = storeAPI => next => action => {
   }
   return next(action)
 }
-
-function constructPOST(state) {
-
-  const searchFacets = state.searchFacets;
-  const bboxFacet = state.bboxFacet;
-  const datetimeFacet = state.datetimeFacet;
-  const pathname = window.location.pathname;
-  const collection = pathname.startsWith('/collections/') ? pathname.split('/')[2] : null;
-  
-  const bboxList = [
-    `${(bboxFacet.westBbox !== '') ? bboxFacet.westBbox : '-180'}`,
-    `${(bboxFacet.southBbox !== '') ? bboxFacet.southBbox : '-90'}`,
-    `${(bboxFacet.eastBbox !== '') ? bboxFacet.eastBbox : '180'}`,
-    `${(bboxFacet.northBbox !== '') ? bboxFacet.northBbox : '90'}`,
-  ];
-
-  const datetimeString = `${(datetimeFacet.startTime) ? datetimeFacet.startTime:'..'}:${(datetimeFacet.startTime) ? datetimeFacet.endTime : '..'}`;
-
-  var filters = [];
-  for (const facet of searchFacets) {
-    if (facet.value !== undefined && facet.value.length === 1) {
-      filters.push(
-        {
-          "eq": [
-            {"property": facet.id},
-            facet.value[0]
-          ]
-        }
-      )
-    } else if (facet.value !== undefined && facet.value.length > 1) {
-      var facet_filters = [];
-      for (const value of facet.value) {
-        facet_filters.push(
-          {
-            "eq": [
-              {"property": facet.id},
-              value
-            ]
-          }
-        )
-      }
-      filters.push(
-        {
-          "or": facet_filters
-        }
-      )
-    }
-  }
-
-  const POSTbody = {
-    ...(collection && {collections: [collection]}),
-    ...((bboxList[0] !== '-180' || bboxList[1] !== '-90' || bboxList[2] !== '180' || bboxList[3] !== '90') && {bbox: bboxList}),
-    ...(datetimeString !== '..:..' && {datetime: datetimeString}),
-    ...(filters.length !== 0 && {filter: {"and":filters}}),
-    ...(state.query && {q: state.query}),
-    ...((state.page && state.page !== 1) && {page: state.page}),
-  }
-  return POSTbody;
-};
 
 export default asyncFunctionMiddleware;

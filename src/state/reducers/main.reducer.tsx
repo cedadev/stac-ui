@@ -3,34 +3,31 @@ import createReducer from './createReducer';
 import {
   setItemListType,
   setCollectionListType,
-  selectItemType,
-  deselectItemType,
+  setItemType,
+  unsetItemType,
   setCollectionType,
   unsetCollectionType,
   setSearchFacetsType,
-  setSearchFacetValueType,
+  setSearchFacetType,
   setBboxFacetType,
   setDatetimeFacetType,
   setQueryType,
   setContextType,
-  setItemListLoadingType,
   setItemListErrorType,
   setPageType,
-  setSearchFacetsPayload,
+  setFacetsPayload,
   setFacetPayload,
   setItemListPayload,
   setCollectionListPayload,
-  selectItemPayload,
+  setItemPayload,
   setCollectionPayload,
   setQueryPayload,
   setContextPayload,
-  setItemListLoadingPayload,
   setItemListErrorPayload,
   setPagePayload,
 } from "../actions/actions.types";
 
 export const initialState: MainState = {
-  itemList: [],
   collectionList: [],
   searchFacets: [],
   bboxFacet: {
@@ -45,7 +42,6 @@ export const initialState: MainState = {
   },
   query: '',
   page: 1,
-  itemListLoading: false,
   itemListError: false,
 };
 
@@ -59,6 +55,15 @@ export function setItemList(
   };
 }
 
+export function unsetItemList(
+  state: MainState,
+): MainState {
+  return {
+    ...state,
+    itemList: undefined,
+  };
+}
+
 export function setCollectionList(
   state: MainState,
   payload: setCollectionListPayload
@@ -69,13 +74,22 @@ export function setCollectionList(
   };
 }
 
-export function selectItem(
+export function setItem(
   state: MainState,
-  payload: selectItemPayload
+  payload: setItemPayload
 ): MainState {
   return {
     ...state,
-    selectedItem: payload.item,
+    item: payload.item,
+  };
+}
+
+export function unsetItem(
+  state: MainState,
+): MainState {
+  return {
+    ...state,
+    item: undefined,
   };
 }
 
@@ -85,16 +99,7 @@ export function setCollection(
 ): MainState {
   return {
     ...state,
-    selectedCollection: payload.collection,
-  };
-}
-
-export function deselectItem(
-  state: MainState,
-): MainState {
-  return {
-    ...state,
-    selectedItem: undefined,
+    collection: payload.collection,
   };
 }
 
@@ -103,13 +108,13 @@ export function unsetCollection(
 ): MainState {
   return {
     ...state,
-    selectedCollection: undefined,
+    collection: undefined,
   };
 }
 
 export function setSearchFacets(
   state: MainState,
-  payload: setSearchFacetsPayload
+  payload: setFacetsPayload
 ): MainState {
   return {
     ...state,
@@ -117,7 +122,7 @@ export function setSearchFacets(
   };
 }
 
-export function setSearchFacetValue(
+export function setSearchFacet(
   state: MainState,
   payload: setFacetPayload
 ): MainState {
@@ -198,16 +203,6 @@ export function setPage(
     }
 }
 
-export function setItemListLoading(
-  state: MainState,
-  payload: setItemListLoadingPayload,
-): MainState {
-  return {
-    ...state,
-    itemListLoading: payload.isLoading,
-    }
-}
-
 export function setItemListError(
   state: MainState,
   payload: setItemListErrorPayload,
@@ -222,20 +217,18 @@ export function setItemListError(
 const MainReducer = createReducer(initialState, {
   [setItemListType]: setItemList,
   [setCollectionListType]: setCollectionList,
-  [selectItemType]: selectItem,
-  [deselectItemType]: deselectItem,
+  [setItemType]: setItem,
+  [unsetItemType]: unsetItem,
   [setCollectionType]: setCollection,
   [unsetCollectionType]: unsetCollection,
   [setSearchFacetsType]: setSearchFacets,
-  [setSearchFacetValueType]: setSearchFacetValue,
+  [setSearchFacetType]: setSearchFacet,
   [setBboxFacetType]: setBboxFacet,
   [setDatetimeFacetType]: setDatetimeFacet,
   [setQueryType]: setQuery,
   [setContextType]: setContext,
   [setPageType]: setPage,
-  [setItemListLoadingType]: setItemListLoading,
   [setItemListErrorType]: setItemListError,
-
 })
 
 export default MainReducer;

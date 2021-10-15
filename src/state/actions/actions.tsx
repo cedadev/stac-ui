@@ -1,11 +1,12 @@
 import {
     setItemListType,
+    unsetItemListType,
     setCollectionListType,
-    selectItemType,
-    deselectItemType,
+    setItemType,
+    unsetItemType,
     setSearchFacetsType,
     updateSearchFacetsType,
-    setSearchFacetValueType,
+    setSearchFacetType,
     setDatetimeFacetType,
     setBboxFacetType,
     setQueryType,
@@ -15,19 +16,17 @@ import {
     setLimitType,
     setPageType,
     updateItemListType,
-    setItemListLoadingType,
     setItemListErrorType,
     setItemListPayload,
     setCollectionListPayload,
-    selectItemPayload,
-    setSearchFacetsPayload,
+    setItemPayload,
+    setFacetsPayload,
     setFacetPayload,
     setQueryPayload,
     setCollectionPayload,
     setContextPayload,
     setLimitPayload,
     setPagePayload,
-    setItemListLoadingPayload,
     setItemListErrorPayload,
   } from './actions.types';
   import { ActionType } from '../app.types';
@@ -42,6 +41,14 @@ import {
       itemList,
     },
   });
+
+  export function unsetItemList() {
+    return { type: unsetItemListType }
+  };
+
+  export function updateItemList() {
+    return { type: updateItemListType }
+  }
   
   export const setCollectionList = (
     collectionList: Collection[]
@@ -52,18 +59,18 @@ import {
     },
   });
   
-  export const selectItem = (
+  export const setItem = (
     item: Item
-  ): ActionType<selectItemPayload> => ({
-    type: selectItemType,
+  ): ActionType<setItemPayload> => ({
+    type: setItemType,
     payload: {
       item,
     },
   });
   
-  export function deselectItem() {
-    return { type: deselectItemType }
-  }
+  export function unsetItem() {
+    return { type: unsetItemType }
+  };
 
   export const setCollection = (
     collection: Collection
@@ -89,18 +96,18 @@ import {
 
   export const setSearchFacets = (
     searchFacets: Facet[]
-  ): ActionType<setSearchFacetsPayload> => ({
+  ): ActionType<setFacetsPayload> => ({
     type: setSearchFacetsType,
     payload: {
       searchFacets,
     },
   });
 
-  export const setSearchFacetValue = (
+  export const setSearchFacet = (
     id: string,
     value: any,
   ): ActionType<setFacetPayload> => ({
-    type: setSearchFacetValueType,
+    type: setSearchFacetType,
     payload: {
       id,
       value
@@ -164,19 +171,6 @@ import {
       page,
     },
   });
-
-  export function updateItemList() {
-    return { type: updateItemListType }
-  }
-
-  export const setItemListLoading = (
-    isLoading: boolean
-  ): ActionType<setItemListLoadingPayload> => ({
-    type: setItemListLoadingType,
-    payload: {
-      isLoading,
-    },
-  });  
   
   export const setItemListError = (
     hasError: boolean

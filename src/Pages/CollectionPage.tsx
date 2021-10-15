@@ -30,7 +30,7 @@ interface CollectionStoreProps {
 }
 
 interface CollectionDispatchProps {
-  setCollection: (selectedCollection: Collection) => Action;
+  setCollection: (collection: Collection) => Action;
   unsetCollection: () => Action;
   updateItemList: () => Action;
 }
@@ -48,7 +48,7 @@ class CollectionPage extends Component<(CollectionCombinedProps), { loading: boo
     this.setState({ ...this.state, loading: true });
     const collectionResult = await requestCollection(this.props.collection_id);
     if (collectionResult.success) {
-      await this.setCollection(collectionResult.collection);
+      this.props.setCollection(collectionResult.collection);
     } else {
       this.setState({ ...this.state, hasError: true });
     }
@@ -57,15 +57,7 @@ class CollectionPage extends Component<(CollectionCombinedProps), { loading: boo
   };
 
   public async componentWillUnmount(): Promise<void> {
-    await this.setCollection();
-  };
-
-  public setCollection = async (collection?: Collection): Promise<void> => {
-    if (collection) {
-      this.props.setCollection(collection);
-    } else {
-      this.props.unsetCollection();
-    };
+    this.props.unsetCollection();
   };
 
   public render(): React.ReactElement {
@@ -131,7 +123,7 @@ class CollectionPage extends Component<(CollectionCombinedProps), { loading: boo
 
 const mapStateToProps = (state: StateType): CollectionStoreProps => {
   return {
-    collection: state.main.selectedCollection,
+    collection: state.main.collection,
   }
 }
 

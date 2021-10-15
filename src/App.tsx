@@ -1,32 +1,18 @@
 import React, { Component } from 'react';
 import './App.css';
-import * as log from 'loglevel';
-import { createStore, applyMiddleware, compose } from 'redux';
+import log from 'loglevel';
 import { createBrowserHistory } from 'history';
-import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
+import { ConnectedRouter } from 'connected-react-router';
 import { Switch, Route, RouteComponentProps } from 'react-router';
 import { Provider } from 'react-redux';
-import AppReducer from './state/reducers/app.reducer';
-import thunk from 'redux-thunk';
 import SearchPage from './Pages/SearchPage';
 import ItemPage from './Pages/ItemPage';
 import CollectionPage from './Pages/CollectionPage';
 import CollectionListPage from './Pages/CollectionListPage';
-import asyncMiddleware from './AsyncMiddleware';
-
-
+import constructStore from './ConstructStore';
 
 const history = createBrowserHistory();
-
-/* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
-const composeEnhancers =
-  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-/* eslint-enable */
-const middleware = [thunk, routerMiddleware(history), asyncMiddleware];
-const store = createStore(
-  AppReducer(history),
-  composeEnhancers(applyMiddleware(...middleware))
-);
+export const store = constructStore(history);
 
 class App extends Component<{}, { hasError: boolean }> {
 
