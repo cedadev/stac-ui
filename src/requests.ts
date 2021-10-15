@@ -21,7 +21,7 @@ async function requestGET(requestURL: string): Promise<any> {
 
 async function requestPOST(requestBody: any): Promise<any> {
   console.log('RequestBody: ', requestBody)
-  const response = await fetch(`${process.env.REACT_APP_STAC_API}search`, {
+  const response = await fetch(`${REACT_APP_STAC_API}search`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
@@ -38,7 +38,7 @@ async function requestPOST(requestBody: any): Promise<any> {
 
 export async function requestSearchItems(url: string): Promise<{success: boolean, itemList: Item[], context:Context}> {
 
-  const requestURL = `${process.env.REACT_APP_STAC_API}search${url}`;
+  const requestURL = `${REACT_APP_STAC_API}search${url}`;
   const response = await requestGET(requestURL);
   const collectionList: Collection[]= [];
   const itemList: Item[] = [];
