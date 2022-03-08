@@ -61,7 +61,7 @@ class CollectionList extends React.Component<CollectionListCombinedProps, {loadi
           key={collection.id.toString()}
           onClick={() => {this.handleItemClick(collection);}}        
         >
-          <h5>{collection.title}</h5>
+          <h5>{collection.title ? collection.title : collection.id}</h5>
           { collection.properties.keywords &&
             <p>Keywords: {collection.properties.keywords.join(', ')}</p>
           }

@@ -5,14 +5,29 @@ import { createBrowserHistory } from 'history';
 import { ConnectedRouter } from 'connected-react-router';
 import { Switch, Route, RouteComponentProps } from 'react-router';
 import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { routerMiddleware } from 'connected-react-router';
+import AppReducer from './state/reducers/app.reducer';
+import thunk from 'redux-thunk';
+import asyncMiddleware from './AsyncMiddleware';
 import SearchPage from './Pages/SearchPage';
+import AssetSearchPage from './Pages/AssetSearchPage';
 import ItemPage from './Pages/ItemPage';
+import AssetPage from './Pages/AssetPage';
 import CollectionPage from './Pages/CollectionPage';
 import CollectionListPage from './Pages/CollectionListPage';
-import constructStore from './ConstructStore';
+
 
 const history = createBrowserHistory();
-export const store = constructStore(history);
+/* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
+const composeEnhancers =
+  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+/* eslint-enable */
+const middleware = [thunk, routerMiddleware(history), asyncMiddleware];
+export const store = createStore(
+  AppReducer(history),
+  composeEnhancers(applyMiddleware(...middleware))
+);
 
 class App extends Component<{}, { hasError: boolean }> {
 
@@ -56,6 +71,7 @@ class App extends Component<{}, { hasError: boolean }> {
             <Switch>
                 <Route exact path="/" component={SearchPage} />
                 <Route exact path="/search" component={SearchPage} />
+                <Route exact path="/asset/search" component={AssetSearchPage} />
                 <Route exact path="/collections" component={CollectionListPage} />
                 <Route exact path="/collections/:collection_id"
                   render={({ match,
@@ -67,6 +83,12 @@ class App extends Component<{}, { hasError: boolean }> {
                   render={({ match,
                     }: RouteComponentProps<{collection_id: string, item_id: string,}>) => (
                       <ItemPage collection_id={match.params.collection_id} item_id={match.params.item_id}/>
+                  )}
+                />
+                <Route exact path="/collections/:collection_id/items/:item_id/assets/:asset_id"
+                  render={({ match,
+                    }: RouteComponentProps<{collection_id: string, item_id: string, asset_id: string,}>) => (
+                      <AssetPage collection_id={match.params.collection_id} item_id={match.params.item_id} asset_id={match.params.asset_id}/>
                   )}
                 />
             </Switch>

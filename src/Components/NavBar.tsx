@@ -16,6 +16,7 @@ class NavBar extends React.Component {
             <Nav className="mr-auto">
               <Nav.Link href="/search">Search</Nav.Link>
               <Nav.Link href="/collections">Collections</Nav.Link>
+              <Nav.Link href="/asset/search">Asset Search</Nav.Link>
             </Nav>
             <Nav >
               <Nav.Link className='ml-auto' href={`${REACT_APP_STAC_API.slice(0, -1)}${window.location.pathname}`}>As JSON</Nav.Link>

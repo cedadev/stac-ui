@@ -1,8 +1,13 @@
-import { Facet, Item, Collection, Context } from "../../types";
+import { Asset, Item, Collection, Facet, Context } from "../../types";
+export const setAssetListType = 'set_asset_list';
+export const unsetAssetListType = 'unset_asset_list';
+export const updateAssetListType = 'update_asset_list';
 export const setItemListType = 'set_item_list';
 export const unsetItemListType = 'unset_item_list';
 export const updateItemListType = 'update_item_list';
 export const setCollectionListType = 'set_collection_list';
+export const setAssetType = 'set_asset';
+export const unsetAssetType = 'unset_asset';
 export const setItemType = 'set_item';
 export const unsetItemType = 'unset_item';
 export const setCollectionType = 'set_collection';
@@ -16,8 +21,12 @@ export const setQueryType = 'set_query';
 export const setContextType = 'set_context';
 export const setLimitType = 'set_limit';
 export const setPageType = 'set_page';
-export const setItemListErrorType = 'set_item_list_error';
+export const setListErrorType = 'set_list_error';
 
+
+export interface setAssetListPayload {
+  assetList: Asset[];
+}
 
 export interface setItemListPayload {
   itemList: Item[];
@@ -25,6 +34,10 @@ export interface setItemListPayload {
 
 export interface setCollectionListPayload {
   collectionList: Collection[];
+}
+
+export interface setAssetPayload {
+  asset: Asset;
 }
 
 export interface setItemPayload {
@@ -60,6 +73,6 @@ export interface setPagePayload {
   page: number;
 }
 
-export interface setItemListErrorPayload {
+export interface setListErrorPayload {
   hasError: boolean;
 }

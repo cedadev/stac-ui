@@ -1,8 +1,11 @@
 import { MainState } from "../app.types";
 import createReducer from './createReducer';
 import {
+  setAssetListType,
   setItemListType,
   setCollectionListType,
+  setAssetType,
+  unsetAssetType,
   setItemType,
   unsetItemType,
   setCollectionType,
@@ -13,17 +16,19 @@ import {
   setDatetimeFacetType,
   setQueryType,
   setContextType,
-  setItemListErrorType,
+  setListErrorType,
   setPageType,
   setFacetsPayload,
   setFacetPayload,
+  setAssetListPayload,
   setItemListPayload,
   setCollectionListPayload,
+  setAssetPayload,
   setItemPayload,
   setCollectionPayload,
   setQueryPayload,
   setContextPayload,
-  setItemListErrorPayload,
+  setListErrorPayload,
   setPagePayload,
 } from "../actions/actions.types";
 
@@ -42,8 +47,27 @@ export const initialState: MainState = {
   },
   query: '',
   page: 1,
-  itemListError: false,
+  listError: false,
 };
+
+export function setAssetList(
+  state: MainState,
+  payload: setAssetListPayload
+): MainState {
+  return {
+    ...state,
+    assetList: payload.assetList,
+  };
+}
+
+export function unsetAssetList(
+  state: MainState,
+): MainState {
+  return {
+    ...state,
+    assetList: undefined,
+  };
+}
 
 export function setItemList(
   state: MainState,
@@ -71,6 +95,25 @@ export function setCollectionList(
   return {
     ...state,
     collectionList: payload.collectionList,
+  };
+}
+
+export function setAsset(
+  state: MainState,
+  payload: setAssetPayload
+): MainState {
+  return {
+    ...state,
+    asset: payload.asset,
+  };
+}
+
+export function unsetAsset(
+  state: MainState,
+): MainState {
+  return {
+    ...state,
+    asset: undefined,
   };
 }
 
@@ -203,20 +246,23 @@ export function setPage(
     }
 }
 
-export function setItemListError(
+export function setListError(
   state: MainState,
-  payload: setItemListErrorPayload,
+  payload: setListErrorPayload,
 ): MainState {
   return {
     ...state,
-    itemListError: payload.hasError,
+    listError: payload.hasError,
     }
 }
 
 
 const MainReducer = createReducer(initialState, {
+  [setAssetListType]: setAssetList,
   [setItemListType]: setItemList,
   [setCollectionListType]: setCollectionList,
+  [setAssetType]: setAsset,
+  [unsetAssetType]: unsetAsset,
   [setItemType]: setItem,
   [unsetItemType]: unsetItem,
   [setCollectionType]: setCollection,
@@ -228,7 +274,7 @@ const MainReducer = createReducer(initialState, {
   [setQueryType]: setQuery,
   [setContextType]: setContext,
   [setPageType]: setPage,
-  [setItemListErrorType]: setItemListError,
+  [setListErrorType]: setListError,
 })
 
 export default MainReducer;

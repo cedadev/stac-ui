@@ -5,22 +5,31 @@ import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { push } from 'connected-react-router';
-import { updateItemList } from '../state/actions/actions';
+import { updateItemList, updateAssetList } from '../state/actions/actions';
 import constructUrl from '../Functions/ConstructURL';
 
+
+interface SearchButtonProps {
+  type: String;
+}
 
 interface SearchButtonDispatchProps {
   push: (path: string) => Action;
   updateItemList: () => Action;
+  updateAssetList: () => Action;
 }
 
-type SearchButtonCombinedProps = SearchButtonDispatchProps;
+type SearchButtonCombinedProps = SearchButtonProps & SearchButtonDispatchProps;
 
 class SearchButton extends Component<SearchButtonCombinedProps, {}> {
 
   public handleSearch = async (e: any): Promise<void> => {
     const url = constructUrl();
-    this.props.updateItemList();
+    if (this.props.type === "item") {
+      this.props.updateItemList();
+    } else if (this.props.type === "asset") {
+      this.props.updateAssetList();
+    }
     this.props.push(url);
   };
 
@@ -36,6 +45,8 @@ const mapDispatchToProps = (
     dispatch(push(path, 'search_button')),
   updateItemList: () =>
     dispatch(updateItemList()),
+    updateAssetList: () =>
+    dispatch(updateAssetList()),
 });
 
 export default connect(null, mapDispatchToProps)(SearchButton);

@@ -5,17 +5,22 @@ import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { push } from 'connected-react-router';
-import { setItem, unsetItem } from '../state/actions/actions';
+import { setItem, unsetItem, updateAssetList } from '../state/actions/actions';
 import { requestItem } from '../requests';
 import NavBar from "../Components/NavBar";
 import Spacial from "../Components/Spacial";
 import BreadCrumb from "../Components/BreadCrumb";
+import MetaAssetList from "../Components/MetaAssetList";
 import AssetList from "../Components/AssetList";
 import MetaDataList from "../Components/MetaDataList";
+import SearchBar from "../Components/SearchBar";
+import FacetsBar from "../Components/FacetsBar";
+import SearchButton from "../Components/SearchButton";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Temporal from '../Components/Temporal';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 
 interface ItemProps {
@@ -29,6 +34,7 @@ interface ItemStoreProps {
 interface ItemDispatchProps {
   setItem: (setItem: Item) => Action;
   unsetItem: () => Action;
+  updateAssetList: () => Action;
   push: (path: string) => Action;
 }
 
@@ -41,6 +47,7 @@ class ItemPage extends Component<ItemCombinedProps, {}>  {
 
     if (result.success && result.item) {
       this.props.setItem(result.item);
+      this.props.updateAssetList();
     }
   }
 
@@ -53,15 +60,35 @@ class ItemPage extends Component<ItemCombinedProps, {}>  {
       return (
         <>
           <NavBar/>
-          <Container>
+          <Container fluid style={{marginBottom:'2em', paddingRight:'15em', paddingLeft:'15em'}}>
             <BreadCrumb collection={this.props.item.collection} item_id={this.props.item.id}/>
             <Row>
               <Col xs={12} sm={8} style={{textAlign: 'left'}}>
-                <h3 style={{marginBottom:'1em'}}>{this.props.item.id}</h3>
-                <h5>Assets</h5>
-                <AssetList assets={this.props.item.assets} />
+                <Row>
+                  <Col sm={{span: 11, offset: 1}}>
+                    <h3 style={{marginBottom:'1em'}}>{this.props.item.id}</h3>
+                    <h5>Metadata Assets</h5>
+                    <MetaAssetList assets={this.props.item.assets} />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12} sm={4} style={{textAlign: 'center'}}>
+                    <br/>
+                    <FacetsBar/>
+                  </Col>
+                  <Col xs={12} sm={8}>
+                    <h5>Assets</h5>
+                    <InputGroup className="mb-3">
+                      <SearchBar type="asset"/>
+                      <InputGroup.Append>
+                        <SearchButton type="asset"/>
+                      </InputGroup.Append>
+                    </InputGroup>
+                    <AssetList />
+                  </Col>
+                </Row>
               </Col>
-              <Col>
+              <Col sm={4}>
               { this.props.item.properties.datetime && 
                 <><Temporal interval={[this.props.item.properties.datetime]}/><br/></> 
               }
@@ -100,6 +127,8 @@ const mapDispatchToProps = (
     dispatch(setItem(item)),
   unsetItem: () => 
     dispatch(unsetItem()),
+  updateAssetList: () =>
+    dispatch(updateAssetList()),
   push: (path: string) =>
     dispatch(push(path)),
 });
