@@ -11,6 +11,7 @@ interface Props {
 class BreadCrumb extends React.Component<Props, {}> {
 
   public render(): React.ReactElement {
+    console.log(this.props)
     return (
       <>
         <br/>

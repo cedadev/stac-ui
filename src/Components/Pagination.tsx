@@ -25,14 +25,14 @@ class Pagination extends React.Component<PaginationCombinedProps, {}> {
       for (const [key, value] of Object.entries(params)) {
         url += `${key}=${value}&`
       }
-
-      const max = (this.props.context && this.props.context.result_count && this.props.context.limit) ? Math.ceil(this.props.context.result_count/this.props.context.limit): undefined;
-
+      console.log(this.props.context)
+      const max = (this.props.context && this.props.context.matched && this.props.context.limit) ? Math.ceil(this.props.context.matched/this.props.context.limit): undefined;
+      console.log(max)
       return (
         <ReactPagination>
           <ReactPagination.Item className={`${page === 1 ? 'disabled' : ''}`} href={`${url}page=${page-1}`} tabIndex={-1} >Previous</ReactPagination.Item>
           <ReactPagination.Item active href={`${url}&page=${page}`}>{page} <span className="sr-only">(current)</span></ReactPagination.Item>
-          <ReactPagination.Item className={`${max && page === max ? 'disabled' : ''}`} href={`${url}page=${page+1}`} >Next</ReactPagination.Item>
+          <ReactPagination.Item className={`${max && page >= max ? 'disabled' : ''}`} href={`${url}page=${page+1}`} >Next</ReactPagination.Item>
         </ReactPagination>
       );
   }

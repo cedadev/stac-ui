@@ -148,7 +148,7 @@ export async function requestAsset(collection_id: string, item_id: string, asset
   const item: Item | undefined = (await requestItem(collection_id, item_id)).item;
   if (response.ok && item) {
     const asset: Asset = {
-      id: response.result.id,
+      id: response.result.asset_id,
       type: response.result.type,
       title: response.result.title,
       href: response.result.href,

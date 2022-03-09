@@ -15,6 +15,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Temporal from '../Components/Temporal';
+import ListGroup from 'react-bootstrap/ListGroup';
 
 
 interface AssetProps {
@@ -37,11 +38,11 @@ type AssetCombinedProps = AssetProps & AssetStoreProps & AssetDispatchProps;
 class AssetPage extends Component<AssetCombinedProps, {}>  {
 
   public async componentDidMount(): Promise<void> {
-    const result = await requestSearchAssetsPOST({ids: [this.props.asset_id], items: [this.props.item_id]})
+    const result = await requestAsset(this.props.collection_id, this.props.item_id, this.props.asset_id)
     // const result = await requestAsset(this.props.collection_id, this.props.item_id, this.props.asset_id);
 
-    if (result.success && result.assetList[0]) {
-      this.props.setAsset(result.assetList[0]);
+    if (result.success && result.asset) {
+      this.props.setAsset(result.asset);
     }
   }
 
@@ -57,14 +58,20 @@ class AssetPage extends Component<AssetCombinedProps, {}>  {
           <Container fluid style={{marginBottom:'2em', paddingRight:'15em', paddingLeft:'15em'}}>
             <BreadCrumb collection={this.props.asset.item.collection} item_id={this.props.asset.item.id} asset_id={this.props.asset.id}/>
             <Row>
-              <Col xs={12} sm={8} style={{textAlign: 'left'}}>
+              <Col>
                 <Row>
                   <Col sm={{span: 11, offset: 1}}>
                     <h3 style={{marginBottom:'1em'}}>{this.props.asset.id}</h3>
                   </Col>
                 </Row>
-              </Col>
-              <Col sm={12}>
+                <ListGroup>
+                  <h5>Download</h5>
+                  <ListGroup.Item
+                    id="temporal-list-item"
+                  >
+                    <a href={this.props.asset.href}>{this.props.asset.href}</a>
+                  </ListGroup.Item>
+                </ListGroup><br/>
               { this.props.asset.properties.datetime && 
                 <><Temporal interval={[this.props.asset.properties.datetime]}/><br/></> 
               }

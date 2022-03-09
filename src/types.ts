@@ -52,7 +52,6 @@ export type Facet = {
 
 export type Context = {
   limit?: number;
-  result_count?: number;
   matched?: number;
   collections?: [];
 };
