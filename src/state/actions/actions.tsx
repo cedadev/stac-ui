@@ -1,7 +1,12 @@
 import {
+    setAssetListType,
+    unsetAssetListType,
+    updateAssetListType,
     setItemListType,
     unsetItemListType,
     setCollectionListType,
+    setAssetType,
+    unsetAssetType,
     setItemType,
     unsetItemType,
     setSearchFacetsType,
@@ -16,9 +21,11 @@ import {
     setLimitType,
     setPageType,
     updateItemListType,
-    setItemListErrorType,
+    setListErrorType,
+    setAssetListPayload,
     setItemListPayload,
     setCollectionListPayload,
+    setAssetPayload,
     setItemPayload,
     setFacetsPayload,
     setFacetPayload,
@@ -27,12 +34,29 @@ import {
     setContextPayload,
     setLimitPayload,
     setPagePayload,
-    setItemListErrorPayload,
+    setListErrorPayload,
   } from './actions.types';
   import { ActionType } from '../app.types';
-  import { Facet, Item, Collection, Context } from '../../types';
-  
-  
+  import { Asset, Item, Collection, Facet, Context } from '../../types';
+
+
+  export const setAssetList = (
+    assetList: Asset[]
+  ): ActionType<setAssetListPayload> => ({
+    type: setAssetListType,
+    payload: {
+      assetList,
+    },
+  });
+
+  export function unsetAssetList() {
+    return { type: unsetAssetListType }
+  };
+
+  export function updateAssetList() {
+    return { type: updateAssetListType }
+  };
+
   export const setItemList = (
     itemList: Item[]
   ): ActionType<setItemListPayload> => ({
@@ -48,7 +72,7 @@ import {
 
   export function updateItemList() {
     return { type: updateItemListType }
-  }
+  };
   
   export const setCollectionList = (
     collectionList: Collection[]
@@ -59,6 +83,19 @@ import {
     },
   });
   
+  export const setAsset = (
+    asset: Asset
+  ): ActionType<setAssetPayload> => ({
+    type: setAssetType,
+    payload: {
+      asset,
+    },
+  });
+  
+  export function unsetAsset() {
+    return { type: unsetAssetType }
+  };
+
   export const setItem = (
     item: Item
   ): ActionType<setItemPayload> => ({
@@ -172,10 +209,10 @@ import {
     },
   });
   
-  export const setItemListError = (
+  export const setListError = (
     hasError: boolean
-  ): ActionType<setItemListErrorPayload> => ({
-    type: setItemListErrorType,
+  ): ActionType<setListErrorPayload> => ({
+    type: setListErrorType,
     payload: {
       hasError,
     },

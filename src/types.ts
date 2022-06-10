@@ -18,17 +18,29 @@ export type Item = {
   id: string;
   bbox: number[];
   properties: any;
-  assets: Asset[];
+  assets: MetaAsset[];
   collection: Collection;
 };
 
 export type Asset = {
   id: string;
+  bbox: number[];
   title: string;
   href: string;
   type: string;
   roles: string[];
+  item: Item;
+  properties: any;
 };
+
+export type MetaAsset = {
+  id: string;
+  bbox: number[];
+  title: string;
+  href: string;
+  type: string;
+  roles: string[];
+}
 
 export type Facet = {
   id: string;
@@ -40,7 +52,6 @@ export type Facet = {
 
 export type Context = {
   limit?: number;
-  result_count?: number;
   matched?: number;
   collections?: [];
 };

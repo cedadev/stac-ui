@@ -4,7 +4,16 @@ function constructPOST(state: any): object {
   const bboxFacet = state.bboxFacet;
   const datetimeFacet = state.datetimeFacet;
   const pathname = window.location.pathname;
-  const collection = pathname.startsWith('/collections/') ? pathname.split('/')[2] : null;
+
+  const item_regex = '\/collections\/(?<collection>.*)\/items\/(?<item>.*)';
+  const collection_regex = '\/collections\/(?<collection>.*)';
+  let item, collection = null, match;
+  if ((match = pathname.match(item_regex)) !== null && match.groups) {
+    collection = match.groups.collection;
+    item = match.groups.item;
+  } else if ((match = pathname.match(collection_regex)) !== null && match.groups) {
+    collection = match.groups.collection;
+  }
   
   const bboxList = [
     `${(bboxFacet.westBbox !== '') ? bboxFacet.westBbox : '-180'}`,
@@ -13,7 +22,7 @@ function constructPOST(state: any): object {
     `${(bboxFacet.northBbox !== '') ? bboxFacet.northBbox : '90'}`,
   ];
 
-  const datetimeString = `${(datetimeFacet.startTime) ? datetimeFacet.startTime:'..'}:${(datetimeFacet.startTime) ? datetimeFacet.endTime : '..'}`;
+  const datetimeString = `${(datetimeFacet.startTime) ? datetimeFacet.startTime.toISOString() : '..'}/${(datetimeFacet.endTime) ? datetimeFacet.endTime.toISOString() : '..'}`;
 
   var filters = [];
   for (const facet of searchFacets) {
@@ -48,6 +57,7 @@ function constructPOST(state: any): object {
 
   const POSTbody = {
     ...(collection && {collections: [collection]}),
+    ...(item && {items: [item]}),
     ...((bboxList[0] !== '-180' || bboxList[1] !== '-90' || bboxList[2] !== '180' || bboxList[3] !== '90') && {bbox: bboxList}),
     ...(datetimeString !== '..:..' && {datetime: datetimeString}),
     ...(filters.length !== 0 && {filter: {"and":filters}}),

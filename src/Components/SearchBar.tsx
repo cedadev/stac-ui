@@ -1,33 +1,32 @@
 import FormControl from 'react-bootstrap/FormControl';
 import React, { Component } from 'react';
 import { StateType } from '../state/app.types';
-import { BboxFacet, Collection, DatetimeFacet, Facet } from '../types';
 import { Action, AnyAction} from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { setQuery } from '../state/actions/actions';
 import queryString from 'query-string';
-import { updateItemList } from '../state/actions/actions';
+import { updateItemList, updateAssetList } from '../state/actions/actions';
 import constructUrl from '../Functions/ConstructURL';
 import { push } from 'connected-react-router';
 
 
+interface SearchBarProps {
+  type: String;
+}
+
 interface SearchBarStoreProps {
   query: string;
-  searchFacets: Facet[];
-  bboxFacet: BboxFacet;
-  datetimeFacet: DatetimeFacet;
-  page?: number;
-  collection?: Collection;
 }
 
 interface SearchBarDispatchProps {
   setQuery: (query: string) => Action;
   updateItemList: () => Action;
+  updateAssetList: () => Action;
   push: (path: string) => Action;
 }
 
-type SearchBarCombinedProps = SearchBarStoreProps & SearchBarDispatchProps;
+type SearchBarCombinedProps = SearchBarProps & SearchBarStoreProps & SearchBarDispatchProps;
 
 class SearchBar extends Component<SearchBarCombinedProps, {}> {
 
@@ -50,7 +49,11 @@ class SearchBar extends Component<SearchBarCombinedProps, {}> {
   private handleKeyPress = async (e: any): Promise<void> => {
     if (e.charCode === 13) {
       const url = constructUrl();
-      this.props.updateItemList();
+      if (this.props.type === "item") {
+        this.props.updateItemList();
+      } else if (this.props.type === "asset") {
+        this.props.updateAssetList();
+      }
       this.props.push(url);
     }
   };
@@ -71,10 +74,6 @@ class SearchBar extends Component<SearchBarCombinedProps, {}> {
 const mapStateToProps = (state: StateType): SearchBarStoreProps => {
   return {
     query: state.main.query,
-    searchFacets: state.main.searchFacets,
-    bboxFacet: state.main.bboxFacet,
-    datetimeFacet: state.main.datetimeFacet,
-    collection: state.main.collection,
   }
 }
 
@@ -87,6 +86,8 @@ const mapDispatchToProps = (
     dispatch(push(path, 'search_button')),
   updateItemList: () =>
     dispatch(updateItemList()),
+  updateAssetList: () =>
+    dispatch(updateAssetList())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);

@@ -1,5 +1,5 @@
 import { REACT_APP_STAC_API } from './config';
-import { Item, Facet, Collection, Context } from './types';
+import { Asset, Item, Facet, Collection, Context } from './types';
 // import {items_data, collection_data} from './data.js';
 
 
@@ -19,9 +19,9 @@ async function requestGET(requestURL: string): Promise<any> {
   return response;
 };
 
-async function requestPOST(requestBody: any): Promise<any> {
+async function requestPOST(endpoint: string, requestBody: any): Promise<any> {
   console.log('RequestBody: ', requestBody)
-  const response = await fetch(`${REACT_APP_STAC_API}search`, {
+  const response = await fetch(`${REACT_APP_STAC_API}${endpoint}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
@@ -70,9 +70,47 @@ export async function requestSearchItems(url: string): Promise<{success: boolean
   };  
 };
 
-export async function requestSearchItemsPOST(body: any): Promise<{success: boolean, itemList: Item[], context:Context}> {
+export async function requestSearchAssetsPOST(body: any): Promise<{success: boolean, assetList: Asset[], context:Context}> {
+  const response = await requestPOST('asset/search', body);
+  console.log(`Body: ${JSON.stringify(body)}`);
+  console.log(`Response: ${JSON.stringify(response)}`);
+  const itemList: Item[]= [];
+  const assetList: Asset[] = [];
 
-  const response = await requestPOST(body);
+  if (response.ok) {
+    for (const a of response.result.features) {
+      console.log(a)
+      var item = itemList.find(i => i && i.id === a.item);
+      if (!item) {
+        const item_resp = await requestSearchItemsPOST({'ids':[a.item]});
+        item = item_resp.itemList[0];
+        itemList.push(item);
+      };
+      assetList.push({
+        id: a.asset_id,
+        title: a.title,
+        href: a.href,
+        roles: a.role,
+        type: a.type,
+        bbox: a.bbox,
+        properties: a.properties,
+        item: item
+      });
+    };
+
+    const result = {
+      success: true,
+      assetList: assetList,
+      context: response.result.context
+    };
+    return result;
+  } else {
+    return {success: false, assetList: response.ok, context: response.ok}
+  };
+};
+
+export async function requestSearchItemsPOST(body: any): Promise<{success: boolean, itemList: Item[], context:Context}> {
+  const response = await requestPOST('search', body);
   const collectionList: Collection[]= [];
   const itemList: Item[] = [];
 
@@ -103,6 +141,32 @@ export async function requestSearchItemsPOST(body: any): Promise<{success: boole
   };
 };
 
+export async function requestAsset(collection_id: string, item_id: string, asset_id: string): Promise<{success: boolean, asset: Asset|undefined}> {
+
+  const requestURL = `${REACT_APP_STAC_API}collections/${collection_id}/items/${item_id}/assets/${asset_id}`;
+  const response = await requestGET(requestURL);
+  const item: Item | undefined = (await requestItem(collection_id, item_id)).item;
+  if (response.ok && item) {
+    const asset: Asset = {
+      id: response.result.asset_id,
+      type: response.result.type,
+      title: response.result.title,
+      href: response.result.href,
+      roles: response.result.role,
+      item: item,
+      bbox: response.result.bbox,
+      properties: response.result.properties,
+    };
+    const result = {
+      success: true,
+      asset: asset
+    };
+    return result;
+  } else {
+    return {success: false, asset: undefined}
+  };
+};
+
 export async function requestItem(collection_id: string, item_id: string): Promise<{success: boolean, item: Item|undefined}> {
 
   const requestURL = `${REACT_APP_STAC_API}collections/${collection_id}/items/${item_id}`;
@@ -118,8 +182,10 @@ export async function requestItem(collection_id: string, item_id: string): Promi
         return {
           id: key,
           title: value.title,
+          bbox: value.bbox,
           href: value.href,
           type: value.type,
+          properties: value.properties,
           roles: value.roles,
         }
       }),
@@ -191,7 +257,6 @@ export async function requestCollectionItems(collection: Collection): Promise<{s
     return {success: false, items: response.ok, context: response.ok}
   };
 };
-
 
 export async function requestFacets(collection?:string, collections?:string): Promise<{success: boolean, availableFacets: any}> {
   let requestURL: string

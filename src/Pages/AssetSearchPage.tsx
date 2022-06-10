@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ItemList from '../Components/ItemList';
+import AssetList from '../Components/AssetList';
 import NavBar from "../Components/NavBar";
 import FacetsBar from "../Components/FacetsBar";
 import SearchBar from "../Components/SearchBar";
@@ -10,7 +10,7 @@ import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 
 
-class SearchPage extends Component< {}, {}>  {
+class AssetSearchPage extends Component< {}, {}>  {
 
   public render(): React.ReactElement {
     return (
@@ -23,16 +23,16 @@ class SearchPage extends Component< {}, {}>  {
               <FacetsBar/>
             </Col>
             <Col>
-              <h2>CEDA Search</h2>
+              <h2>CEDA Asset Search</h2>
               <InputGroup className="mb-3">
-                <SearchBar type="item"/>
+                <SearchBar type="asset"/>
                 <InputGroup.Append>
-                  <SearchButton type="item"/>
+                  <SearchButton type="asset"/>
                 </InputGroup.Append>
               </InputGroup>
               {window.location.search &&
               <>
-                <ItemList/>
+                <AssetList/>
               </>
               }
             </Col>
@@ -43,4 +43,4 @@ class SearchPage extends Component< {}, {}>  {
   }
 }
 
-export default (SearchPage);
+export default (AssetSearchPage);

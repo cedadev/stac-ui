@@ -11,7 +11,7 @@ ${(bboxFacet.eastBbox !== '') ? bboxFacet.eastBbox : '180'},\
 ${(bboxFacet.northBbox !== '') ? bboxFacet.northBbox : '90'}`;
 
 
-  const datetimeString = `${(datetimeFacet.startTime) ? datetimeFacet.startTime.toISOString() : '..'}:${(datetimeFacet.endTime) ? datetimeFacet.endTime.toISOString() : '..'}`;
+  const datetimeString = `${(datetimeFacet.startTime) ? datetimeFacet.startTime.toISOString() : '..'}/${(datetimeFacet.endTime) ? datetimeFacet.endTime.toISOString() : '..'}`;
     
   const filters = [];
   for (const facet of state.searchFacets) {

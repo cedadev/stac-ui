@@ -53,7 +53,7 @@ class ItemList extends React.Component<ItemListCombinedProps, {}> {
           style={{textAlign: 'left'}}
         >
           {!this.props.collection &&
-            <p>Collection: <a href={`/collections/${item.collection.id}`}>{item.collection.title}</a></p>
+            <p>Collection: <a href={`/collections/${item.collection.id}`}>{item.collection.title ? item.collection.title : item.collection.id}</a></p>
           }
           {badges}
         </ListGroup.Item>
@@ -99,7 +99,7 @@ const mapStateToProps = (state: StateType): ItemListStoreProps => {
     collection: state.main.collection,
     itemList: state.main.itemList,
     context: state.main.context,
-    hasError: state.main.itemListError,
+    hasError: state.main.listError,
   }
 }
 

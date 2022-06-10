@@ -1,4 +1,4 @@
-import { requestSearchItemsPOST, requestFacets } from './requests';
+import { requestSearchAssetsPOST, requestSearchItemsPOST, requestFacets } from './requests';
 import queryString from 'query-string';
 import constructPOST from './Functions/ConstructPOST';
 
@@ -6,6 +6,27 @@ const asyncFunctionMiddleware = storeAPI => next => action => {
   console.log(action.type)
   console.log(action)
   let state = storeAPI.getState().main;
+
+
+  // UPDATE ASSET LIST
+  if (action.type === 'update_asset_list') {
+    const body = constructPOST(state);
+    requestSearchAssetsPOST(body).then(result => {
+      if (result.success) {
+        storeAPI.dispatch({ type: 'set_asset_list', payload: {assetList: result.assetList} })
+        storeAPI.dispatch({ type: 'set_context', payload: {context: result.context} })
+        // storeAPI.dispatch({ type: 'update_search_facets', payload: {context: result.context} })
+        storeAPI.dispatch({ type: 'set_list_error', payload: {hasError: false} })
+      } else {
+        throw new Error('Request failed');
+      }
+    }).catch(error => { 
+      storeAPI.dispatch({ type: 'set_list_error', payload: {hasError: true} })
+    })
+  }
+
+
+  // UPDATE ITEM LIST
   if (action.type === 'update_item_list') {
     const body = constructPOST(state);
     requestSearchItemsPOST(body).then(result => {
@@ -13,14 +34,17 @@ const asyncFunctionMiddleware = storeAPI => next => action => {
         storeAPI.dispatch({ type: 'set_item_list', payload: {itemList: result.itemList} })
         storeAPI.dispatch({ type: 'set_context', payload: {context: result.context} })
         storeAPI.dispatch({ type: 'update_search_facets', payload: {context: result.context} })
+        storeAPI.dispatch({ type: 'set_list_error', payload: {hasError: false} })
       } else {
         throw new Error('Request failed');
       }
     }).catch(error => { 
-      storeAPI.dispatch({ type: 'set_item_list_error', payload: {hasError: true} })
+      storeAPI.dispatch({ type: 'set_list_error', payload: {hasError: true} })
     })
   }
 
+
+  // UPDATE SEARCH FACETS
   if (action.type === 'update_search_facets') {
     requestFacets(state.collection?.id, action.payload.context?.collections.toString()).then(result => {
       
@@ -55,27 +79,9 @@ const asyncFunctionMiddleware = storeAPI => next => action => {
     })
   }
 
-  if (action.type === 'update_search') {
-    // Set the item list to display loading 
-    storeAPI.dispatch({ type: 'set_item_list_loading', payload: {isLoading: true} })
-    const body = constructPOST(storeAPI.getState().main);
-    
-    requestSearchItemsPOST(body).then(result => {
-      if (result.success) {
-        storeAPI.dispatch({ type: 'set_item_list', payload: {itemList: result.itemList} })
-        storeAPI.dispatch({ type: 'set_context', payload: {context: result.context} })
-      } else {
-        throw new Error('Request failed');
-      }
-    }).catch(error => { 
-      storeAPI.dispatch({ type: 'set_item_list_error', payload: {hasError: true} })
-    })
-    
-    storeAPI.dispatch({ type: 'set_item_list_loading', payload: {isLoading: false} })
-  }
-  
+
+  // UPDATE STATE FROM URL PARAMETERS
   if (action.type === '@@router/LOCATION_CHANGE' && window.location.search !== '' && action.payload.location?.state !== 'search_button') {
-    // CHANGE OF ADDRESS SET STATE FROM URL PARAMETERS
     let params = queryString.parse(window.location.search);
     
     if (params.q && typeof params.q === 'string' && params.q !== state.query) {

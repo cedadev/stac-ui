@@ -81,7 +81,7 @@ class CollectionPage extends Component<(CollectionCombinedProps), { loading: boo
               <Col xs={12} sm={8} style={{textAlign: 'left'}}>
                 <Row>
                   <Col xs={12} sm={{span: 11, offset: 1}}>
-                    <h3>{this.props.collection.title}</h3>
+                    <h3>{this.props.collection.title ? this.props.collection.title : this.props.collection.id}</h3>
                     <p>{this.props.collection.description}</p>
                   </Col>
                 </Row>
@@ -91,9 +91,9 @@ class CollectionPage extends Component<(CollectionCombinedProps), { loading: boo
                   </Col>
                   <Col xs={12} sm={8}>
                     <InputGroup className="mb-3">
-                      <SearchBar/>
+                      <SearchBar type="item"/>
                       <InputGroup.Append>
-                        <SearchButton />
+                        <SearchButton type="item"/>
                       </InputGroup.Append>
                     </InputGroup>
                     <h5>Items</h5>
